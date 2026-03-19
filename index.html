@@ -1,0 +1,1716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agentic Commerce Landscape — 137 Companies · 12 Infrastructure Layers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-base: #050507;
+      --text-primary: #f0f0f5;
+      --text-secondary: #8A8A9A;
+      --text-tertiary: #4A4A5A;
+      --glass-bg: rgba(255,255,255,0.025);
+      --glass-border: rgba(255,255,255,0.08);
+      --glass-border-light: rgba(255,255,255,0.14);
+      --glow-indigo: #3B428A;
+      --glow-amethyst: #6A4C7A;
+      --font-display: 'Instrument Serif', serif;
+      --font-sans: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px;
+      --nav-h: 64px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg-base); color: var(--text-primary); font-family: var(--font-sans); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+    /* ── PARTICLE CANVAS ── */
+    #particle-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 1; }
+
+    /* ── NOISE / AMBIENT ── */
+    .noise-layer { position: fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; z-index:9999; opacity:0.035; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); mix-blend-mode:screen; }
+    .ambient-light { position:fixed; border-radius:50%; filter:blur(130px); pointer-events:none; z-index:0; animation:breathe 12s infinite alternate ease-in-out; }
+    @keyframes breathe { 0%{transform:scale(1) translate(0,0);opacity:0.35} 100%{transform:scale(1.12) translate(18px,-18px);opacity:0.55} }
+    .light-1 { top:-8%; left:-12%; width:45vw; height:45vw; background:var(--glow-indigo); }
+    .light-2 { top:35%; right:-18%; width:55vw; height:55vw; background:var(--glow-amethyst); animation-delay:-4s; }
+    .light-3 { bottom:-15%; left:25%; width:35vw; height:35vw; background:#1A2A3A; animation-delay:-8s; }
+
+    /* ── NAV ── */
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; height:var(--nav-h); background:linear-gradient(to bottom,rgba(5,5,7,0.92),rgba(5,5,7,0)); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,0.05); }
+    .nav-inner { max-width:1520px; margin:0 auto; padding:0 32px; height:100%; display:flex; align-items:center; justify-content:space-between; }
+    .logo { font-family:var(--font-display); font-size:1.35rem; display:flex; align-items:center; gap:10px; }
+    .logo .logo-badge { font-family:var(--font-mono); font-size:0.6rem; letter-spacing:0.08em; color:var(--text-secondary); padding:2px 7px; border:1px solid var(--glass-border); border-radius:4px; }
+    .nav-stats { display:flex; gap:24px; align-items:center; font-family:var(--font-mono); font-size:0.7rem; color:var(--text-secondary); }
+    .nav-stat { display:flex; flex-direction:column; align-items:center; gap:2px; }
+    .nav-stat-val { font-size:1rem; color:var(--text-primary); font-weight:500; }
+    .nav-stat-label { font-size:0.6rem; letter-spacing:0.06em; text-transform:uppercase; }
+    .nav-divider { width:1px; height:28px; background:var(--glass-border); }
+    .nav-built-by { font-family:var(--font-mono); font-size:0.62rem; color:var(--text-tertiary); letter-spacing:0.04em; display:flex; align-items:center; gap:5px; }
+    .nav-built-by a { color:var(--text-secondary); text-decoration:none; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:1px; transition:color 0.15s,border-color 0.15s; }
+    .nav-built-by a:hover { color:#818cf8; border-color:rgba(129,140,248,0.5); }
+
+    /* ── LAYOUT ── */
+    .page-wrapper { max-width:1520px; margin:0 auto; padding:0 32px; padding-top:calc(var(--nav-h) + 48px); position:relative; z-index:1; }
+
+    /* ── HERO ── */
+    .hero-header { margin-bottom:40px; }
+    .hero-header h1 { font-family:var(--font-display); font-size:clamp(2.4rem,4vw,3.8rem); font-weight:400; line-height:0.95; letter-spacing:-0.02em; background:linear-gradient(175deg,#FFF 0%,rgba(255,255,255,0.45) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:16px; }
+    .hero-header h1 em { font-style:italic; background:linear-gradient(135deg,#818cf8,#c084fc); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .hero-header .subtitle { font-size:1rem; color:var(--text-secondary); font-weight:300; line-height:1.6; max-width:600px; }
+
+    /* ── CONTROLS ── */
+    .controls-bar { background:var(--glass-bg); backdrop-filter:blur(20px); border:1px solid var(--glass-border); border-top:1px solid var(--glass-border-light); border-radius:var(--radius-lg); padding:16px 20px; margin-bottom:20px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; position:relative; z-index:10; box-shadow:0 16px 40px -12px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.04); }
+    .search-wrap { position:relative; flex:1; min-width:220px; }
+    .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-tertiary); pointer-events:none; display:flex; align-items:center; }
+    .search-input { width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:9px 14px 9px 38px; font-family:var(--font-sans); font-size:0.875rem; color:var(--text-primary); outline:none; transition:border-color 0.2s,background 0.2s; }
+    .search-input::placeholder { color:var(--text-tertiary); }
+    .search-input:focus { border-color:rgba(129,140,248,0.4); background:rgba(255,255,255,0.06); }
+    .filter-group { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
+    .filter-label { font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-tertiary); margin-right:4px; }
+    .pill { padding:5px 12px; border-radius:20px; border:1px solid rgba(255,255,255,0.1); font-size:0.78rem; font-weight:500; cursor:pointer; background:transparent; color:var(--text-secondary); transition:all 0.18s ease; white-space:nowrap; }
+    .pill:hover { border-color:rgba(255,255,255,0.2); color:var(--text-primary); }
+    .pill.active { background:rgba(129,140,248,0.15); border-color:rgba(129,140,248,0.4); color:#818cf8; }
+    .pill.tradfi.active { background:rgba(56,189,248,0.12); border-color:rgba(56,189,248,0.35); color:#38bdf8; }
+    .pill.crypto.active { background:rgba(192,132,252,0.12); border-color:rgba(192,132,252,0.35); color:#c084fc; }
+    .pill.both.active { background:rgba(52,211,153,0.12); border-color:rgba(52,211,153,0.35); color:#34d399; }
+    .sort-select { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:8px 32px 8px 12px; font-family:var(--font-sans); font-size:0.8rem; color:var(--text-secondary); outline:none; cursor:pointer; -webkit-appearance:none; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235A5A6A' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; }
+    .sort-select option { background:#111118; }
+    .results-count { font-family:var(--font-mono); font-size:0.7rem; color:var(--text-tertiary); white-space:nowrap; }
+    .results-count strong { color:var(--text-secondary); }
+    .view-toggle { display:flex; gap:3px; margin-left:auto; }
+    .view-btn { width:30px; height:30px; border-radius:var(--radius-sm); border:1px solid rgba(255,255,255,0.08); background:transparent; color:var(--text-tertiary); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s ease; flex-shrink:0; }
+    .view-btn:hover { color:var(--text-secondary); border-color:rgba(255,255,255,0.16); background:rgba(255,255,255,0.04); }
+    .view-btn.active { color:#818cf8; border-color:rgba(129,140,248,0.3); background:rgba(129,140,248,0.08); }
+
+    /* ── LIST VIEW ── */
+    .company-list { display:flex; flex-direction:column; gap:4px; padding-bottom:80px; }
+    .company-row { display:flex; align-items:center; gap:14px; background:var(--glass-bg); border:1px solid var(--glass-border); border-top:1px solid var(--glass-border-light); border-radius:var(--radius-sm); padding:12px 16px; cursor:pointer; transition:background 0.15s,border-color 0.15s; position:relative; overflow:hidden; }
+    .company-row::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--layer-color,#818cf8); opacity:0; transition:opacity 0.2s; border-radius:0; }
+    .company-row:hover { background:rgba(255,255,255,0.03); border-color:color-mix(in srgb,var(--layer-color,#818cf8) 25%,var(--glass-border)); }
+    .company-row:hover::before { opacity:1; }
+    .row-logo { width:32px; height:32px; flex-shrink:0; border-radius:7px; overflow:hidden; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; }
+    .row-logo img { width:100%; height:100%; object-fit:cover; }
+    .row-logo .logo-initials { font-size:0.7rem; }
+    .row-name { font-size:0.88rem; font-weight:600; color:var(--text-primary); min-width:160px; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex-shrink:0; }
+    .row-badges { display:flex; gap:5px; flex-shrink:0; }
+    .row-detail { font-size:0.78rem; color:var(--text-secondary); font-weight:300; line-height:1.4; flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .row-funding { font-family:var(--font-mono); font-size:0.6rem; color:#34d399; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:4px; padding:2px 6px; flex-shrink:0; }
+    .row-links { display:flex; gap:5px; flex-shrink:0; margin-left:auto; }
+    .row-link { display:flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:5px; border:1px solid rgba(255,255,255,0.08); color:var(--text-tertiary); text-decoration:none; transition:all 0.15s ease; }
+    .row-link:hover { color:var(--text-secondary); background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.14); }
+    @media (max-width:768px) { .row-detail { display:none; } .row-name { max-width:140px; } }
+
+    /* ── TABS (FIXED: flex-wrap, all visible) ── */
+    .tabs-nav { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:6px; }
+    .tab-btn { display:flex; align-items:center; gap:6px; padding:6px 12px; border-radius:var(--radius-sm); border:1px solid transparent; background:transparent; font-family:var(--font-sans); font-size:0.76rem; color:var(--text-secondary); cursor:pointer; transition:all 0.18s ease; white-space:nowrap; }
+    .tab-btn:hover { background:rgba(255,255,255,0.04); color:var(--text-primary); }
+    .tab-btn.active { background:rgba(255,255,255,0.06); color:var(--text-primary); border-color:var(--glass-border-light); }
+    .tab-dot { width:7px; height:7px; border-radius:50%; background:var(--layer-color,#818cf8); flex-shrink:0; }
+    .tab-count { font-family:var(--font-mono); font-size:0.62rem; color:var(--text-tertiary); padding:1px 5px; background:rgba(255,255,255,0.06); border-radius:4px; }
+    .tab-btn.active .tab-count { color:var(--text-secondary); }
+    .tab-universe .tab-dot { background:linear-gradient(135deg,#818cf8,#c084fc); }
+    .tab-universe.active { background:rgba(129,140,248,0.08); border-color:rgba(129,140,248,0.25); }
+
+    /* ── LAYER DESC ── */
+    .layer-desc { padding:10px 16px; margin-bottom:28px; font-size:0.85rem; color:var(--text-secondary); font-weight:300; line-height:1.6; border-left:2px solid rgba(255,255,255,0.1); transition:all 0.25s ease; }
+
+    /* ── GRID ── */
+    .company-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px; padding-bottom:80px; }
+
+    /* ── CARD + PARALLAX ── */
+    .company-card {
+      --rx: 0deg; --ry: 0deg; --gx: 50%; --gy: 50%; --lx: 0px; --ly: 0px;
+      background:var(--glass-bg); backdrop-filter:blur(20px);
+      border:1px solid var(--glass-border); border-top:1px solid var(--glass-border-light);
+      border-radius:var(--radius-md); padding:18px; cursor:pointer;
+      display:flex; flex-direction:column; gap:12px;
+      position:relative; overflow:hidden;
+      transition:border-color 0.22s ease, box-shadow 0.22s ease, transform 0.08s ease;
+      box-shadow:0 8px 24px -8px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.04);
+      transform-style:preserve-3d; will-change:transform;
+    }
+    .company-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--layer-color,#818cf8); opacity:0; transition:opacity 0.22s ease; }
+    .company-card:hover::before { opacity:1; }
+    .company-card:hover {
+      border-color:color-mix(in srgb,var(--layer-color,#818cf8) 30%,var(--glass-border));
+      box-shadow:0 20px 48px -8px rgba(0,0,0,0.85),0 0 0 1px color-mix(in srgb,var(--layer-color,#818cf8) 20%,transparent),inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .card-glare { position:absolute; inset:0; border-radius:inherit; background:radial-gradient(circle at var(--gx) var(--gy),rgba(255,255,255,0.07) 0%,transparent 55%); pointer-events:none; opacity:0; transition:opacity 0.15s; }
+    .company-card:hover .card-glare { opacity:1; }
+    .company-logo-wrap { width:44px; height:44px; flex-shrink:0; border-radius:10px; overflow:hidden; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; transform:translate(var(--lx),var(--ly)); transition:transform 0.08s ease; }
+    .company-logo-wrap img { width:100%; height:100%; object-fit:cover; }
+    .logo-initials { font-family:var(--font-display); font-size:1.1rem; font-weight:400; color:var(--text-secondary); font-style:italic; }
+    .card-header { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+    .card-badges { display:flex; flex-direction:column; gap:5px; align-items:flex-end; }
+    .badge { font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.05em; padding:2px 7px; border-radius:4px; border:1px solid; white-space:nowrap; }
+    .badge-tradfi { color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.08); }
+    .badge-crypto { color:#c084fc; border-color:rgba(192,132,252,0.3); background:rgba(192,132,252,0.08); }
+    .badge-both { color:#34d399; border-color:rgba(52,211,153,0.3); background:rgba(52,211,153,0.08); }
+    .badge-layer { color:var(--layer-color); border-color:color-mix(in srgb,var(--layer-color) 25%,transparent); background:color-mix(in srgb,var(--layer-color) 8%,transparent); }
+    .company-name { font-size:0.97rem; font-weight:600; line-height:1.3; color:var(--text-primary); transform:translate(calc(var(--lx)*0.5),calc(var(--ly)*0.5)); transition:transform 0.08s ease; }
+    .company-detail { font-size:0.8rem; color:var(--text-secondary); line-height:1.55; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; font-weight:300; }
+    .card-funding { font-family:var(--font-mono); font-size:0.65rem; color:#34d399; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:5px; padding:3px 8px; display:inline-block; }
+    .card-footer { display:flex; align-items:center; gap:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:10px; margin-top:auto; flex-wrap:wrap; }
+    .card-link { display:flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.03em; color:var(--text-tertiary); text-decoration:none; padding:4px 8px; border-radius:5px; border:1px solid rgba(255,255,255,0.07); transition:all 0.15s ease; }
+    .card-link:hover { color:var(--text-secondary); border-color:rgba(255,255,255,0.15); background:rgba(255,255,255,0.04); }
+    .card-layer-tag { margin-left:auto; font-family:var(--font-mono); font-size:0.62rem; color:var(--layer-color); opacity:0.7; }
+    @keyframes cardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+    .company-card { animation:cardIn 0.3s ease both; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { grid-column:1/-1; text-align:center; padding:80px 20px; color:var(--text-tertiary); }
+    .empty-state h3 { font-family:var(--font-display); font-size:1.8rem; font-style:italic; margin-bottom:8px; }
+
+    /* ── UNIVERSE CTA BUTTON ── */
+    .universe-cta { margin-bottom:16px; }
+    .universe-cta-btn { width:100%; background:linear-gradient(135deg,rgba(129,140,248,0.07),rgba(192,132,252,0.07)); border:1px solid rgba(129,140,248,0.18); border-radius:var(--radius-lg); padding:14px 22px; display:flex; align-items:center; gap:16px; cursor:pointer; transition:all 0.22s ease; position:relative; overflow:hidden; text-align:left; }
+    .universe-cta-btn:hover { background:linear-gradient(135deg,rgba(129,140,248,0.13),rgba(192,132,252,0.13)); border-color:rgba(129,140,248,0.32); box-shadow:0 0 40px -10px rgba(129,140,248,0.15); }
+    .ucta-glow { position:absolute; inset:0; background:radial-gradient(ellipse at 15% 50%,rgba(129,140,248,0.06),transparent 60%); pointer-events:none; }
+    .ucta-orb { width:36px; height:36px; flex-shrink:0; border-radius:50%; background:radial-gradient(circle at 35% 35%,rgba(255,255,255,0.35),rgba(129,140,248,0.12) 50%,rgba(129,140,248,0.05)); border:1px solid rgba(129,140,248,0.25); box-shadow:0 0 16px rgba(129,140,248,0.25),inset 0 1px 0 rgba(255,255,255,0.2); animation:orb-pulse 3s infinite alternate ease-in-out; }
+    @keyframes orb-pulse { 0%{box-shadow:0 0 16px rgba(129,140,248,0.25)} 100%{box-shadow:0 0 32px rgba(129,140,248,0.45),0 0 60px rgba(192,132,252,0.15)} }
+    .ucta-text { flex:1; }
+    .ucta-title { display:block; font-family:var(--font-display); font-size:1.05rem; font-style:italic; color:var(--text-primary); margin-bottom:2px; }
+    .ucta-sub { font-family:var(--font-mono); font-size:0.65rem; color:var(--text-tertiary); letter-spacing:0.02em; }
+    .ucta-badge { font-family:var(--font-mono); font-size:0.6rem; color:#818cf8; background:rgba(129,140,248,0.1); border:1px solid rgba(129,140,248,0.2); border-radius:20px; padding:4px 10px; white-space:nowrap; flex-shrink:0; }
+
+    /* ── UNIVERSE VIEW ── */
+    #universe-view { display:none; position:relative; width:100%; height:calc(100vh - var(--nav-h) - 60px); min-height:600px; border-radius:var(--radius-lg); overflow:hidden; background:rgba(0,0,0,0.3); border:1px solid var(--glass-border); margin-bottom:80px; }
+    #universe-canvas { width:100%; height:100%; display:block; }
+
+    /* Side panel */
+    #u-side-panel { position:absolute; left:0; top:0; bottom:0; width:290px; background:rgba(5,5,14,0.82); backdrop-filter:blur(28px); -webkit-backdrop-filter:blur(28px); border-right:1px solid var(--glass-border-light); transform:translateX(-100%); transition:transform 0.42s cubic-bezier(0.25,1,0.5,1); overflow-y:auto; z-index:15; padding:22px 18px; }
+    #u-side-panel.visible { transform:translateX(0); }
+    #u-side-panel::-webkit-scrollbar { width:3px; }
+    #u-side-panel::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
+    .usp-header { margin-bottom:16px; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .usp-layer-badge { font-family:var(--font-mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-tertiary); margin-bottom:6px; }
+    .usp-layer-name { font-family:var(--font-display); font-size:1.15rem; font-style:italic; margin-bottom:6px; }
+    .usp-layer-desc { font-size:0.76rem; color:var(--text-secondary); line-height:1.5; }
+    .usp-divider { height:1px; background:rgba(255,255,255,0.05); margin:14px 0; }
+    .usp-section-label { font-family:var(--font-mono); font-size:0.6rem; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-tertiary); margin-bottom:10px; }
+    .usp-company-item { display:flex; align-items:center; gap:9px; padding:7px 8px; border-radius:var(--radius-sm); cursor:pointer; transition:background 0.15s; margin-bottom:2px; }
+    .usp-company-item:hover { background:rgba(255,255,255,0.05); }
+    .usp-co-logo { width:26px; height:26px; border-radius:6px; overflow:hidden; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .usp-co-logo img { width:100%; height:100%; object-fit:cover; }
+    .usp-co-initials, .usp-co-logo .logo-initials { font-family:var(--font-display); font-size:0.75rem; font-style:italic; color:var(--text-secondary); display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
+    .usp-co-name { font-size:0.78rem; font-weight:500; color:var(--text-primary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; flex:1; min-width:0; }
+    .usp-co-type { font-family:var(--font-mono); font-size:0.58rem; flex-shrink:0; }
+    .usp-co-type.tradfi { color:#38bdf8; } .usp-co-type.crypto { color:#c084fc; } .usp-co-type.both { color:#34d399; }
+
+    #u-tooltip { position:absolute; pointer-events:none; background:rgba(10,10,18,0.92); border:1px solid var(--glass-border-light); border-radius:var(--radius-sm); padding:6px 10px; font-size:0.78rem; color:var(--text-primary); max-width:200px; line-height:1.4; opacity:0; transition:opacity 0.15s; z-index:20; }
+    #u-tooltip .tt-name { font-weight:600; margin-bottom:1px; }
+    #u-tooltip .tt-sub { font-size:0.68rem; color:var(--text-secondary); }
+    #u-back { position:absolute; top:14px; left:308px; z-index:20; padding:7px 15px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); border-radius:20px; color:var(--text-secondary); font-size:0.78rem; cursor:pointer; transition:all 0.18s; display:none; }
+    #u-back.panel-open { left:308px; }
+    #u-back:hover { background:rgba(255,255,255,0.12); color:var(--text-primary); }
+    #u-instruction { position:absolute; bottom:20px; left:50%; transform:translateX(-50%); font-family:var(--font-mono); font-size:0.68rem; letter-spacing:0.07em; text-transform:uppercase; color:var(--text-tertiary); pointer-events:none; transition:opacity 0.5s; white-space:nowrap; }
+
+    /* ── MODAL ── */
+    .modal-overlay { position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.25s ease; }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal-panel { background:#0d0d14; border:1px solid var(--glass-border-light); border-radius:var(--radius-lg); max-width:560px; width:100%; max-height:90vh; overflow-y:auto; position:relative; box-shadow:0 40px 80px -20px rgba(0,0,0,0.9),inset 0 1px 0 rgba(255,255,255,0.06); transform:translateY(24px); transition:transform 0.3s cubic-bezier(0.25,1,0.5,1); }
+    .modal-overlay.open .modal-panel { transform:translateY(0); }
+    .modal-panel::-webkit-scrollbar { width:4px; }
+    .modal-panel::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:2px; }
+    .modal-top-bar { height:4px; width:100%; border-radius:var(--radius-lg) var(--radius-lg) 0 0; background:var(--modal-layer-color,#818cf8); }
+    .modal-body { padding:28px; }
+    .modal-close { position:absolute; top:16px; right:16px; width:30px; height:30px; border-radius:8px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); transition:all 0.15s; }
+    .modal-close:hover { background:rgba(255,255,255,0.12); color:var(--text-primary); }
+    .modal-header { display:flex; gap:18px; align-items:flex-start; margin-bottom:20px; }
+    .modal-logo { width:64px; height:64px; flex-shrink:0; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; }
+    .modal-logo img { width:100%; height:100%; object-fit:cover; }
+    .modal-logo-initials, .modal-logo .logo-initials { font-family:var(--font-display); font-size:1.6rem; font-style:italic; color:var(--text-secondary); display:flex; align-items:center; justify-content:center; width:100%; height:100%; }
+    .modal-company-name { font-family:var(--font-display); font-size:1.5rem; font-weight:400; line-height:1.1; margin-bottom:10px; }
+    .modal-badges { display:flex; gap:6px; flex-wrap:wrap; }
+    .modal-divider { height:1px; background:rgba(255,255,255,0.06); margin:20px 0; }
+    .modal-label { font-family:var(--font-mono); font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:8px; }
+    .modal-layer-name { font-size:0.9rem; color:var(--text-secondary); display:flex; align-items:center; gap:8px; margin-bottom:18px; }
+    .modal-layer-dot { width:8px; height:8px; border-radius:50%; background:var(--modal-layer-color,#818cf8); }
+    .modal-description { font-size:0.9rem; color:var(--text-secondary); line-height:1.7; font-weight:300; margin-bottom:20px; }
+    .modal-funding { display:inline-flex; align-items:center; gap:6px; font-family:var(--font-mono); font-size:0.72rem; color:#34d399; background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.2); border-radius:6px; padding:6px 12px; margin-bottom:20px; }
+    .modal-links { display:flex; gap:10px; flex-wrap:wrap; }
+    .modal-link-btn { display:flex; align-items:center; gap:7px; padding:9px 18px; border-radius:var(--radius-sm); font-size:0.82rem; font-weight:500; text-decoration:none; transition:all 0.18s ease; flex:1; justify-content:center; min-width:120px; }
+    .modal-link-btn.website { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); color:var(--text-primary); }
+    .modal-link-btn.website:hover { background:rgba(255,255,255,0.12); }
+    .modal-link-btn.x-link { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); color:var(--text-secondary); }
+    .modal-link-btn.x-link:hover { background:rgba(255,255,255,0.07); color:var(--text-primary); }
+
+    /* ── FOOTER ── */
+    footer { border-top:1px solid rgba(255,255,255,0.05); padding:32px; text-align:center; font-family:var(--font-mono); font-size:0.7rem; color:var(--text-tertiary); position:relative; z-index:1; }
+    footer a { color:var(--text-secondary); text-decoration:none; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:1px; transition:color 0.15s,border-color 0.15s; }
+    footer a:hover { color:var(--text-primary); border-color:rgba(255,255,255,0.3); }
+
+    /* ── LIST YOUR PROTOCOL CTA ── */
+    .list-protocol-cta { margin-bottom:24px; }
+    .lp-cta-btn { width:100%; background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(16,185,129,0.10)); border:1px solid rgba(52,211,153,0.22); border-radius:var(--radius-lg); padding:18px 26px; display:flex; align-items:center; gap:20px; cursor:pointer; transition:all 0.22s ease; position:relative; overflow:hidden; text-align:left; }
+    .lp-cta-btn:hover { background:linear-gradient(135deg,rgba(52,211,153,0.12),rgba(16,185,129,0.18)); border-color:rgba(52,211,153,0.45); box-shadow:0 0 50px -12px rgba(52,211,153,0.2); }
+    .lp-cta-glow { position:absolute; inset:0; background:radial-gradient(ellipse at 8% 50%,rgba(52,211,153,0.08),transparent 60%); pointer-events:none; }
+    .lp-cta-icon { width:42px; height:42px; flex-shrink:0; border-radius:12px; background:rgba(52,211,153,0.12); border:1px solid rgba(52,211,153,0.3); display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(52,211,153,0.15); }
+    .lp-cta-icon svg { color:#34d399; }
+    .lp-cta-text { flex:1; }
+    .lp-cta-title { display:block; font-size:1rem; font-weight:600; color:var(--text-primary); margin-bottom:3px; letter-spacing:-0.01em; }
+    .lp-cta-sub { font-family:var(--font-mono); font-size:0.65rem; color:var(--text-tertiary); letter-spacing:0.02em; }
+    .lp-cta-right { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+    .lp-cta-badge { font-family:var(--font-mono); font-size:0.62rem; color:#34d399; background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.25); border-radius:20px; padding:5px 12px; white-space:nowrap; }
+    .lp-cta-arrow { display:flex; align-items:center; color:#34d399; animation:arrowBounce 1.4s infinite ease-in-out; }
+    @keyframes arrowBounce { 0%,100%{transform:translateX(0)} 50%{transform:translateX(5px)} }
+
+    /* ── SUBMIT FORM MODAL ── */
+    .submit-overlay { position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,0.82); backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.25s ease; }
+    .submit-overlay.open { opacity:1; pointer-events:all; }
+    .submit-panel { background:#0c0c15; border:1px solid var(--glass-border-light); border-radius:var(--radius-lg); max-width:620px; width:100%; max-height:92vh; overflow-y:auto; position:relative; box-shadow:0 40px 100px -20px rgba(0,0,0,0.95),0 0 0 1px rgba(52,211,153,0.06),inset 0 1px 0 rgba(255,255,255,0.06); transform:translateY(28px) scale(0.98); transition:transform 0.32s cubic-bezier(0.25,1,0.5,1); }
+    .submit-overlay.open .submit-panel { transform:translateY(0) scale(1); }
+    .submit-panel::-webkit-scrollbar { width:4px; }
+    .submit-panel::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08); border-radius:2px; }
+    .submit-top-bar { height:3px; width:100%; border-radius:var(--radius-lg) var(--radius-lg) 0 0; background:linear-gradient(90deg,#34d399,#10b981,#059669); }
+    .submit-body { padding:32px; }
+    .submit-close { position:absolute; top:18px; right:18px; width:30px; height:30px; border-radius:8px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--text-secondary); transition:all 0.15s; }
+    .submit-close:hover { background:rgba(255,255,255,0.1); color:var(--text-primary); }
+    .submit-title { font-family:var(--font-display); font-size:1.6rem; font-weight:400; background:linear-gradient(135deg,#34d399,#6ee7b7); -webkit-background-clip:text; background-clip:text; color:transparent; margin-bottom:4px; }
+    .submit-subtitle { font-size:0.82rem; color:var(--text-tertiary); margin-bottom:28px; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .form-group { margin-bottom:16px; }
+    .form-group label { display:block; font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-tertiary); margin-bottom:6px; }
+    .form-group label span.req { color:#34d399; margin-left:2px; }
+    .form-input, .form-select, .form-textarea { width:100%; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:var(--radius-sm); padding:10px 14px; font-family:var(--font-sans); font-size:0.875rem; color:var(--text-primary); outline:none; transition:border-color 0.2s,background 0.2s; }
+    .form-input::placeholder, .form-textarea::placeholder { color:var(--text-tertiary); }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:rgba(52,211,153,0.4); background:rgba(255,255,255,0.06); }
+    .form-input.error, .form-select.error, .form-textarea.error { border-color:rgba(239,68,68,0.5); }
+    .form-select { -webkit-appearance:none; appearance:none; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235A5A6A' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; background-color:rgba(255,255,255,0.04); padding-right:34px; }
+    .form-select option { background:#111118; }
+    .form-textarea { resize:vertical; min-height:90px; line-height:1.5; }
+    .form-hint { font-size:0.7rem; color:var(--text-tertiary); margin-top:4px; }
+    .form-divider { height:1px; background:rgba(255,255,255,0.05); margin:20px 0; }
+    .form-section-label { font-family:var(--font-mono); font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:rgba(52,211,153,0.6); margin-bottom:14px; }
+    .submit-btn { width:100%; padding:13px 24px; background:linear-gradient(135deg,#059669,#34d399); border:none; border-radius:var(--radius-sm); font-family:var(--font-sans); font-size:0.9rem; font-weight:600; color:#fff; cursor:pointer; transition:all 0.2s ease; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .submit-btn:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 8px 24px -4px rgba(52,211,153,0.35); }
+    .submit-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; }
+    .submit-status { margin-top:14px; padding:12px 16px; border-radius:var(--radius-sm); font-size:0.85rem; display:none; }
+    .submit-status.success { background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.25); color:#34d399; display:block; }
+    .submit-status.error { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#f87171; display:block; }
+    @media (max-width:560px) { .form-row { grid-template-columns:1fr; } .submit-body { padding:22px; } }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.1); border-radius:3px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width:768px) {
+      .nav-stats { display:none; }
+      .page-wrapper { padding:0 16px; padding-top:calc(var(--nav-h) + 32px); }
+      .hero-header h1 { font-size:2.2rem; }
+      .company-grid { grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:10px; }
+      .controls-bar { padding:12px 14px; gap:10px; }
+      #universe-view { height:calc(100vh - var(--nav-h) - 40px); }
+    }
+    @media (max-width:480px) { .company-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+<div class="noise-layer"></div>
+<div class="ambient-light light-1"></div>
+<div class="ambient-light light-2"></div>
+<div class="ambient-light light-3"></div>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">Agentic Commerce <span class="logo-badge">LANDSCAPE</span></div>
+    <div class="nav-stats">
+      <div class="nav-stat"><span class="nav-stat-val">138</span><span class="nav-stat-label">Companies</span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-stat"><span class="nav-stat-val">12</span><span class="nav-stat-label">Layers</span></div>
+      <div class="nav-divider"></div>
+      <div class="nav-stat"><span class="nav-stat-val">$1.7T</span><span class="nav-stat-label">2030 TAM</span></div>
+      <div class="nav-divider"></div>
+      <span class="nav-built-by">Built by <a href="https://x.com/eli5defi" target="_blank" rel="noopener">@eli5defi</a></span>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="hero-header">
+    <h1>The Agentic Commerce<br><em>Landscape</em></h1>
+    <p class="subtitle">138 companies mapped across 12 infrastructure layers — from foundation models to DeFi execution venues. March 2026.</p>
+  </div>
+
+  <!-- ── LIST YOUR PROTOCOL CTA ── -->
+  <div class="list-protocol-cta">
+    <button class="lp-cta-btn" onclick="openSubmitModal()">
+      <div class="lp-cta-glow"></div>
+      <div class="lp-cta-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <div class="lp-cta-text">
+        <span class="lp-cta-title">List Your Protocol</span>
+        <span class="lp-cta-sub">Get your company on the Agentic Commerce Landscape map</span>
+      </div>
+      <div class="lp-cta-right">
+        <span class="lp-cta-badge">FREE · OPEN</span>
+        <span class="lp-cta-arrow">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+    </button>
+  </div>
+
+  <div class="controls-bar">
+    <div class="search-wrap">
+      <span class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+      <input class="search-input" type="text" id="search" placeholder="Search companies, protocols, descriptions…" oninput="onSearch()">
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">TYPE</span>
+      <button class="pill active" data-type="all" onclick="setType(this)">All</button>
+      <button class="pill tradfi" data-type="TradFi" onclick="setType(this)">TradFi</button>
+      <button class="pill crypto" data-type="Crypto" onclick="setType(this)">Crypto</button>
+      <button class="pill both" data-type="Both" onclick="setType(this)">Both</button>
+    </div>
+    <select class="sort-select" onchange="setSort(this.value)">
+      <option value="default">Default order</option>
+      <option value="name">A → Z</option>
+      <option value="layer">By layer</option>
+      <option value="funding">Has funding</option>
+    </select>
+    <span class="results-count" id="results-count"><strong>138</strong> companies</span>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btn-grid" title="Grid view" onclick="setLayout('grid')">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="0" width="6" height="6" rx="1"/><rect x="10" y="0" width="6" height="6" rx="1"/><rect x="0" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></svg>
+      </button>
+      <button class="view-btn" id="btn-list" title="List view" onclick="setLayout('list')">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor"><rect x="0" y="1" width="16" height="2" rx="1"/><rect x="0" y="7" width="16" height="2" rx="1"/><rect x="0" y="13" width="16" height="2" rx="1"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="universe-cta">
+    <button class="universe-cta-btn" onclick="setView('universe')">
+      <div class="ucta-glow"></div>
+      <div class="ucta-orb"></div>
+      <div class="ucta-text">
+        <span class="ucta-title">Agentic Payment Universe</span>
+        <span class="ucta-sub">Interactive visualization · 12 infrastructure layers · 138 companies · orbital exploration</span>
+      </div>
+      <span class="ucta-badge">EXPLORE ↗</span>
+    </button>
+  </div>
+
+  <div class="tabs-nav" id="tabs-nav"></div>
+  <div class="layer-desc" id="layer-desc"></div>
+
+  <div id="company-grid"></div>
+
+  <div id="universe-view">
+    <canvas id="universe-canvas"></canvas>
+    <div id="u-side-panel">
+      <div class="usp-header">
+        <div class="usp-layer-badge" id="usp-layer-badge">Layer</div>
+        <div class="usp-layer-name" id="usp-layer-name"></div>
+        <div class="usp-layer-desc" id="usp-layer-desc"></div>
+      </div>
+      <div class="usp-divider"></div>
+      <div class="usp-section-label" id="usp-section-label">Companies</div>
+      <div id="usp-company-list"></div>
+    </div>
+    <div id="u-tooltip"><div class="tt-name" id="u-tt-name"></div><div class="tt-sub" id="u-tt-sub"></div></div>
+    <button id="u-back" onclick="universeBack()">← Back</button>
+    <div id="u-instruction">Click the sphere to explore the ecosystem</div>
+  </div>
+</div>
+
+<footer>
+  Sources: Artemis Analytics · Rye · CB Insights · March 2026 &nbsp;|&nbsp;
+  Built by <a href="https://x.com/eli5defi" target="_blank" rel="noopener">eli5defi</a>
+</footer>
+
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-panel" id="modal-panel">
+    <div class="modal-top-bar" id="modal-top-bar"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ── SUBMIT PROTOCOL MODAL ── -->
+<div class="submit-overlay" id="submit-modal" onclick="closeSubmitModalOverlay(event)">
+  <div class="submit-panel" id="submit-panel">
+    <div class="submit-top-bar"></div>
+    <div class="submit-body">
+      <button class="submit-close" onclick="closeSubmitModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="submit-title">List Your Protocol</div>
+      <p class="submit-subtitle">Submit your company to be featured on the Agentic Commerce Landscape. We review all submissions and update the map monthly.</p>
+
+      <form id="submit-form" onsubmit="handleSubmit(event)" novalidate>
+        <!-- Basic Info -->
+        <div class="form-section-label">Protocol Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Protocol Name <span class="req">*</span></label>
+            <input id="f-name" class="form-input" type="text" placeholder="e.g. Acme Protocol" required>
+          </div>
+          <div class="form-group">
+            <label>Website <span class="req">*</span></label>
+            <input id="f-website" class="form-input" type="url" placeholder="https://example.com" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Type <span class="req">*</span></label>
+            <select id="f-type" class="form-select" required>
+              <option value="">Select type…</option>
+              <option value="TradFi">TradFi</option>
+              <option value="Crypto">Crypto</option>
+              <option value="Both">Both</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Layer <span class="req">*</span></label>
+            <select id="f-layer" class="form-select" required>
+              <option value="">Select layer…</option>
+              <option value="Layer 1 — Foundation Models & Compute">Layer 1 — Foundation Models & Compute</option>
+              <option value="Layer 2 — Agent Frameworks & Tooling">Layer 2 — Agent Frameworks & Tooling</option>
+              <option value="Layer 3 — Identity & Trust">Layer 3 — Identity & Trust</option>
+              <option value="Layer 4 — Payments & Stablecoins">Layer 4 — Payments & Stablecoins</option>
+              <option value="Layer 5 — Wallet Infrastructure & AA">Layer 5 — Wallet Infrastructure & AA</option>
+              <option value="Layer 6 — Card Issuance">Layer 6 — Card Issuance</option>
+              <option value="Layer 7 — Checkout Execution">Layer 7 — Checkout Execution</option>
+              <option value="Layer 8 — Merchant Enablement & Discovery">Layer 8 — Merchant Enablement & Discovery</option>
+              <option value="Layer 9 — Execution Chains & Settlement">Layer 9 — Execution Chains & Settlement</option>
+              <option value="Layer 10 — Cross-Chain Execution & Aggregation">Layer 10 — Cross-Chain Execution & Aggregation</option>
+              <option value="Layer 11 — DeFi Protocols (Execution Venues)">Layer 11 — DeFi Protocols (Execution Venues)</option>
+              <option value="Layer 12 — Analytics & Commerce Intelligence">Layer 12 — Analytics & Commerce Intelligence</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description <span class="req">*</span></label>
+          <textarea id="f-description" class="form-textarea" placeholder="Briefly describe what your protocol does and its role in the agentic commerce stack…" required></textarea>
+        </div>
+
+        <div class="form-divider"></div>
+
+        <!-- Optional details -->
+        <div class="form-section-label">Optional Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Logo Domain</label>
+            <input id="f-logo" class="form-input" type="text" placeholder="e.g. yourprotocol.com">
+            <div class="form-hint">Domain used for logo (favicon lookup)</div>
+          </div>
+          <div class="form-group">
+            <label>Twitter / X Handle</label>
+            <input id="f-twitter" class="form-input" type="text" placeholder="e.g. yourprotocol">
+            <div class="form-hint">Without the @ symbol</div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Funding</label>
+          <input id="f-funding" class="form-input" type="text" placeholder="e.g. $12M Series A, Seed, Bootstrapped">
+        </div>
+
+        <div class="form-divider"></div>
+
+        <!-- Contact -->
+        <div class="form-section-label">Contact</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contact Email <span class="req">*</span></label>
+            <input id="f-email" class="form-input" type="email" placeholder="you@yourprotocol.com" required>
+          </div>
+          <div class="form-group">
+            <label>Your Name</label>
+            <input id="f-submitter" class="form-input" type="text" placeholder="Jane Smith">
+          </div>
+        </div>
+
+        <button class="submit-btn" type="submit" id="submit-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Submit for Review
+        </button>
+
+        <div class="submit-status" id="submit-status"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════
+const LAYERS = [
+  null,
+  { id:1,  name:'Foundation',  long:'Foundation Models & Compute',           color:'#6366f1', desc:'The upstream intelligence layer. These provide the reasoning capabilities that power all downstream agent behavior.' },
+  { id:2,  name:'Frameworks',  long:'Agent Frameworks & Tooling',             color:'#8b5cf6', desc:'Orchestration infrastructure: memory, permissions, execution environments, and rail connectivity for agents.' },
+  { id:3,  name:'Identity',    long:'Identity & Trust',                       color:'#ec4899', desc:'When the buyer is software, identity shifts from KYC to cryptographic and delegated authority models.' },
+  { id:4,  name:'Payments',    long:'Payments & Stablecoins',                 color:'#f59e0b', desc:'Machine-native money. Programmable rails and stablecoin settlement. The most-funded layer.' },
+  { id:5,  name:'Wallets',     long:'Wallet Infrastructure & AA',             color:'#10b981', desc:'Agents require embedded custody, session keys, scoped permissions, and programmable balances.' },
+  { id:6,  name:'Cards',       long:'Card Issuance',                          color:'#3b82f6', desc:'Programmable payment instruments: virtual cards with custom auth rules, spending limits, and real-time controls.' },
+  { id:7,  name:'Checkout',    long:'Checkout Execution',                     color:'#ef4444', desc:'The "last mile." Completing purchases on merchant sites. Surprisingly few pure-play companies.' },
+  { id:8,  name:'Merchant',    long:'Merchant Enablement & Discovery',        color:'#f97316', desc:'Helping merchants participate + structured product data for agents. Broadest and most fragmented layer.' },
+  { id:9,  name:'Chains',      long:'Execution Chains & Settlement',          color:'#06b6d4', desc:'Base-layer blockchain networks where agent transactions ultimately settle. Compete on latency, cost, composability.' },
+  { id:10, name:'Cross-Chain', long:'Cross-Chain Execution & Aggregation',    color:'#84cc16', desc:'The connective tissue. Abstracts multi-chain complexity into single integrations for agents.' },
+  { id:11, name:'DeFi',        long:'DeFi Protocols (Execution Venues)',      color:'#a855f7', desc:'Where agents actually execute financial strategies. DEXs, lending, yield, perpetuals.' },
+  { id:12, name:'Analytics',   long:'Analytics & Commerce Intelligence',      color:'#14b8a6', desc:'Structured, machine-readable commerce data. Search becomes protocol-level, not interface-level.' },
+];
+
+const LAYER_CONNECTIONS = [[1,2],[2,3],[2,4],[3,4],[3,5],[4,5],[4,6],[4,7],[5,9],[5,11],[6,7],[7,8],[8,1],[9,10],[9,11],[10,11],[11,12],[12,1]];
+
+const COMPANIES = [
+  {id:1,  name:'Anthropic (Claude)',        type:'TradFi', layer:1,  website:'https://anthropic.com',          logo:'anthropic.com',        detail:'Creator of MCP (Model Context Protocol). Claude powers agent reasoning and tool use across the ecosystem.'},
+  {id:2,  name:'OpenAI (GPT)',              type:'TradFi', layer:1,  website:'https://openai.com',             logo:'openai.com',           detail:'Co-created ACP with Stripe. ChatGPT processes ~50M shopping queries/day. Instant Checkout live.'},
+  {id:3,  name:'Google Gemini',            type:'TradFi', layer:1,  website:'https://deepmind.google',        logo:'gemini.google.com',    detail:'Co-created UCP with Shopify. AI Mode with agentic checkout live. Partners with Mastercard and Adyen.'},
+  {id:4,  name:'xAI (Grok)',               type:'TradFi', layer:1,  website:'https://x.ai',                   logo:'x.ai',                 detail:'Elon Musk\'s AI lab. Grok integrated into X platform. Potential agentic commerce surface.'},
+  {id:5,  name:'Meta (Llama)',             type:'TradFi', layer:1,  website:'https://ai.meta.com',            logo:'meta.com',             detail:'Open-weight Llama models. Acquired Manus (agent developer). $115-135B 2026 AI capex.'},
+  {id:6,  name:'AWS Bedrock',              type:'TradFi', layer:1,  website:'https://aws.amazon.com',         logo:'aws.amazon.com',       detail:'Cloud AI infrastructure. Hosts models and agent workflows at scale. Backs x402 protocol.'},
+  {id:7,  name:'Cloudflare',              type:'TradFi', layer:1,  website:'https://cloudflare.com',         logo:'cloudflare.com',       detail:'Workers AI for edge inference. Co-developed x402 with Coinbase. Agent identification at CDN layer.'},
+  {id:8,  name:'Microsoft Copilot',       type:'TradFi', layer:1,  website:'https://copilot.microsoft.com',  logo:'microsoft.com',        detail:'Copilot Checkout with Mastercard Agent Pay. Azure AI infrastructure.'},
+  {id:9,  name:'Perplexity',              type:'TradFi', layer:1,  website:'https://perplexity.ai',          logo:'perplexity.ai',        detail:'AI search with Buy with Pro. PayPal integration. 5,000+ merchants. In-chat checkout.'},
+  {id:10, name:'Amazon',                  type:'TradFi', layer:1,  website:'https://amazon.com',             logo:'amazon.com',           detail:'"Buy for Me" agent. 500K+ products. Blocks external agents. Sued Perplexity.'},
+  {id:11, name:'MCP (Anthropic)',         type:'Both',   layer:2,  website:'https://modelcontextprotocol.io',logo:'modelcontextprotocol.io',detail:'Model Context Protocol. De facto standard for agent tool discovery and execution.'},
+  {id:12, name:'A2A (Google)',            type:'TradFi', layer:2,  website:'https://google.github.io/A2A',   logo:'google.com',           detail:'Agent-to-Agent protocol. Multi-agent coordination. Open standard via Linux Foundation.'},
+  {id:13, name:'LangChain',              type:'TradFi', layer:2,  website:'https://langchain.com',          logo:'langchain.com',        detail:'Leading agent framework. LangGraph for stateful multi-agent workflows.'},
+  {id:14, name:'CrewAI',                 type:'TradFi', layer:2,  website:'https://crewai.com',             logo:'crewai.com',           detail:'Multi-agent orchestration framework. Role-based agent collaboration.'},
+  {id:15, name:'AutoGPT',               type:'TradFi', layer:2,  website:'https://autogpt.net',            logo:'autogpt.net',          detail:'Autonomous agent framework. One of the earliest general-purpose agent platforms.'},
+  {id:16, name:'OpenClaw',              type:'TradFi', layer:2,  website:'https://github.com/openclaw',    logo:null,                   detail:'Open-source agent framework. Viral adoption. Creator publicly anti-crypto.'},
+  {id:17, name:'Daydreams',             type:'Crypto', layer:2,  website:'https://github.com/daydreamsai',  logo:'daydreams.fun',        detail:'Agent toolkit built specifically for commerce. Supports onchain execution workflows.'},
+  {id:18, name:'Blockrun',              type:'Crypto', layer:2,  website:'https://blockrun.ai',            logo:'blockrun.ai',          detail:'Blockchain-native agent execution environment. Onchain agent deployment.'},
+  {id:19, name:'Vercel AI SDK',         type:'TradFi', layer:2,  website:'https://sdk.vercel.ai',          logo:'vercel.com',           detail:'AI SDK for building agent-powered applications. Streaming, tool use, agent patterns.'},
+  {id:20, name:'Manus',                type:'TradFi', layer:2,  website:'https://manus.ai',               logo:'manus.ai',             detail:'General-purpose agent developer. Acquired by Meta (Dec 2025).'},
+  {id:21, name:'Induced AI',           type:'TradFi', layer:2,  website:'https://induced.ai',             logo:'induced.ai',           detail:'Browser automation for agent-driven commerce. Autonomous web navigation.'},
+  {id:22, name:'Operator (OpenAI)',    type:'TradFi', layer:2,  website:'https://openai.com/operator',    logo:'openai.com',           detail:"OpenAI's browser-using agent. Navigates web and completes tasks autonomously."},
+  {id:23, name:'Deft',                type:'TradFi', layer:2,  website:'https://deft.ai',                logo:'deft.ai',              detail:'AI shopping agent. Product discovery and comparison.'},
+  {id:24, name:'Remark',              type:'TradFi', layer:2,  website:'https://remark.ai',              logo:'remark.ai',            detail:'Conversational AI shopping assistant.'},
+  {id:25, name:'Visa TAP',            type:'TradFi', layer:3,  website:'https://corporate.visa.com',     logo:'visa.com',             detail:'Trusted Agent Protocol. Open framework to distinguish legitimate AI agents from bots. 10+ partners incl. Akamai.'},
+  {id:26, name:'World (Worldcoin)',   type:'Crypto', layer:3,  website:'https://world.org',              logo:'world.org',            detail:'AgentKit: ZK proofs + Orb biometrics link agents to verified humans. x402 integration with Coinbase.'},
+  {id:27, name:'Prove Identity',      type:'TradFi', layer:3,  website:'https://prove.com',              logo:'prove.com',            detail:'Launched Verified Agent: links digital identity, intent, and payment credentials for AI agents.'},
+  {id:28, name:'Trulioo',            type:'TradFi', layer:3,  website:'https://trulioo.com',            logo:'trulioo.com',          detail:'Know Your Agent (KYA) verification via Worldpay partnership. Real-time agent legitimacy checks.'},
+  {id:29, name:'Forter',             type:'TradFi', layer:3,  website:'https://forter.com',             logo:'forter.com',           detail:'Agentic Orchestration Suite. Detected 18,510% agentic traffic spike + 50% fraud increase post-ChatGPT Agent.'},
+  {id:30, name:'Signifyd',           type:'TradFi', layer:3,  website:'https://signifyd.com',           logo:'signifyd.com',         detail:'Commerce protection adapted for dual human/agent traffic. "Parallel shopping universes" approach.'},
+  {id:31, name:'HUMAN Security',    type:'TradFi', layer:3,  website:'https://humansecurity.com',      logo:'humansecurity.com',    detail:'Partnered with Riskified. AgenticTrust platform for AI agent shopping fraud patterns.'},
+  {id:32, name:'Riskified',         type:'TradFi', layer:3,  website:'https://riskified.com',          logo:'riskified.com',        detail:'AI-powered fraud prevention. AgenticTrust collaboration with HUMAN Security.'},
+  {id:33, name:'Proofivy',         type:'Crypto', layer:3,  website:'https://proofivy.com',           logo:'proofivy.com',         detail:'ZK-based identity verification system for agent authentication.'},
+  {id:34, name:'ERC-8004',         type:'Crypto', layer:3,  website:'https://ethereum.org',           logo:'ethereum.org',         detail:'Proposed Ethereum standard for agent identity and delegation on-chain.'},
+  {id:35, name:'Kasada',           type:'TradFi', layer:3,  website:'https://kasada.io',              logo:'kasada.io',            detail:'Real-time bot detection and mitigation. Separating legitimate agents from fraudulent automation.'},
+  {id:36, name:'DataDome',         type:'TradFi', layer:3,  website:'https://datadome.co',            logo:'datadome.co',          detail:'Bot management and fraud protection. Adapting for legitimate AI shopping agents.'},
+  {id:37, name:'Akamai',           type:'TradFi', layer:3,  website:'https://akamai.com',             logo:'akamai.com',           detail:'Edge-based behavioral intelligence. Visa TAP partner. Agent identification at infrastructure level.'},
+  {id:38, name:'Cloudflare Security',type:'TradFi',layer:3, website:'https://cloudflare.com',         logo:'cloudflare.com',       detail:'Building agent identification capabilities at CDN layer. x402 partner.'},
+  {id:39, name:'Agentic Commerce Consortium',type:'Both',layer:3,website:'https://basistheory.com',   logo:'basistheory.com',      detail:'20+ members defining merchant opt-in standards, authorization frameworks, and cart APIs.'},
+  {id:40, name:'Visa',            type:'TradFi', layer:4,  website:'https://corporate.visa.com',     logo:'visa.com',             detail:'Intelligent Commerce platform. 100+ partners. 14,500+ FIs. 175M+ merchant locations. Predicts millions of agent purchases by holiday 2026.'},
+  {id:41, name:'Mastercard',      type:'TradFi', layer:4,  website:'https://mastercard.com',         logo:'mastercard.com',       detail:'Agent Pay for all US cardholders. Agentic Tokens. UCP partner. Acquired BVNK (~$1.8B) for stablecoin infra.'},
+  {id:42, name:'Stripe',          type:'TradFi', layer:4,  website:'https://stripe.com',             logo:'stripe.com',           detail:'Co-developed ACP with OpenAI. Powers ChatGPT Instant Checkout. Agentic Commerce Suite. Acquired Privy.'},
+  {id:43, name:'PayPal',          type:'TradFi', layer:4,  website:'https://paypal.com',             logo:'paypal.com',           detail:'Adopted ACP. Single integration distributing merchant catalogs across ChatGPT, Copilot, Perplexity.'},
+  {id:44, name:'x402 Protocol',   type:'Crypto', layer:4,  website:'https://x402.org',               logo:'x402.org',             detail:'Coinbase + Cloudflare. Stablecoin micropayments embedded in HTTP. Backed by Circle, AWS, Stripe, Google.'},
+  {id:45, name:'Coinbase',        type:'Crypto', layer:4,  website:'https://coinbase.com',           logo:'coinbase.com',         detail:'Agentic Wallets (Feb 2026). x402 protocol. Non-custodial TEE wallets. Agent skills (trade, earn, send).'},
+  {id:46, name:'Skyfire',         type:'Crypto', layer:4,  website:'https://skyfire.xyz',            logo:'skyfire.xyz',          detail:'$9.5M raised (a16z CSX, Coinbase Ventures). USDC payment network for agents. KYA protocol. Visa demo.', funding:'$9.5M'},
+  {id:47, name:'Catena Labs',     type:'Crypto', layer:4,  website:'https://catenalabs.com',         logo:'catenalabs.com',       detail:'$18M raised (a16z crypto). First regulated AI-native financial institution. Circle co-founder Sean Neville.', funding:'$18M'},
+  {id:48, name:'Crossmint',       type:'Crypto', layer:4,  website:'https://crossmint.com',          logo:'crossmint.com',        detail:'Programmable wallets + virtual cards + stablecoin infra. Agentic payments platform. Verifiable credentials.'},
+  {id:49, name:'Nekuda',          type:'Both',   layer:4,  website:'https://nekuda.ai',              logo:'nekuda.ai',            detail:'$5M seed (Madrona, Amex Ventures, Visa Ventures). Secure Agent Wallet + Agentic Mandates SDK. Visa launch partner.', funding:'$5M'},
+  {id:50, name:'Basis Theory',    type:'TradFi', layer:4,  website:'https://basistheory.com',        logo:'basistheory.com',      detail:'$33M Series B. Cloud-native PCI-compliant vault. Leads Agentic Commerce Consortium (20+ members).', funding:'$33M'},
+  {id:51, name:'Circle (USDC)',   type:'Crypto', layer:4,  website:'https://circle.com',             logo:'circle.com',           detail:'USDC issuer. Positions stablecoins as native agent payment layer. Programmability + composability. Backs x402.'},
+  {id:52, name:'BVNK',            type:'Both',   layer:4,  website:'https://bvnk.com',               logo:'bvnk.com',             detail:'Stablecoin payment infrastructure. 130+ countries. Acquired by Mastercard (~$1.8B, Mar 2026).'},
+  {id:53, name:'Prava',           type:'TradFi', layer:4,  website:'https://prava.io',               logo:'prava.io',             detail:'Payments API for agent purchases. Tokenized card-based payments with passkey approval. Visa Intelligent Commerce integrated.'},
+  {id:54, name:'Glide AI',        type:'TradFi', layer:4,  website:'https://glide.ai',               logo:'glide.ai',             detail:'AI payment orchestration. Specialized API for agent-initiated payments.'},
+  {id:55, name:'BlindPay',        type:'Crypto', layer:4,  website:'https://blindpay.com',           logo:'blindpay.com',         detail:'Privacy-preserving agentic payment infrastructure.'},
+  {id:56, name:'Payman',          type:'Crypto', layer:4,  website:'https://paymanai.com',           logo:'paymanai.com',         detail:'AI-to-human payment platform. Allows agents to pay humans for tasks (Fiverr-like). Uses Skyfire.'},
+  {id:57, name:'Adyen',           type:'TradFi', layer:4,  website:'https://adyen.com',              logo:'adyen.com',            detail:'Global payment processor. UCP coalition member. Agent payment enablement.'},
+  {id:58, name:'American Express',type:'TradFi', layer:4,  website:'https://americanexpress.com',    logo:'americanexpress.com',  detail:'UCP coalition member. Invested in Nekuda. Agent commerce capabilities.'},
+  {id:59, name:'fxUSD',           type:'Crypto', layer:4,  website:'https://fxusd.finance',          logo:'fxusd.finance',        detail:'Stablecoin designed for programmable payment flows. Agent-compatible.'},
+  {id:60, name:'Privy',           type:'Crypto', layer:5,  website:'https://privy.io',               logo:'privy.io',             detail:'Embedded wallet infrastructure. Acquired by Stripe. Session keys and scoped permissions for agents.'},
+  {id:61, name:'Turnkey',         type:'Crypto', layer:5,  website:'https://turnkey.com',            logo:'turnkey.com',          detail:'Cryptographic signing infrastructure. Policy engines for autonomous agent systems. $0.10/signature at scale.'},
+  {id:62, name:'Fireblocks',      type:'Crypto', layer:5,  website:'https://fireblocks.com',         logo:'fireblocks.com',       detail:'MPC wallet infrastructure. Policy engine for agent transactions. Acquired Dynamic. $200B+ monthly stablecoin volume.'},
+  {id:63, name:'Phantom',         type:'Crypto', layer:5,  website:'https://phantom.app',            logo:'phantom.app',          detail:'Multi-chain wallet. Agent framework integration. Solana + EVM support.'},
+  {id:64, name:'Safe (Gnosis Safe)',type:'Crypto',layer:5,  website:'https://safe.global',            logo:'safe.global',          detail:'Smart contract wallet. Multi-sig for agent treasury management. ERC-4337 support.'},
+  {id:65, name:'Lit Protocol',    type:'Crypto', layer:5,  website:'https://litprotocol.com',        logo:'litprotocol.com',      detail:'Decentralized key management. Programmable signing for agent wallets.'},
+  {id:66, name:'Openfort',        type:'Crypto', layer:5,  website:'https://openfort.io',            logo:'openfort.io',          detail:'Open-source wallet infrastructure. TEE backend wallets for agent operations. Gasless transactions.'},
+  {id:67, name:'OKX Agentic Wallet',type:'Crypto',layer:5, website:'https://okx.com',               logo:'okx.com',              detail:'Launched Mar 2026. Natural language blockchain ops. ~20 networks. TEE key storage. Onchain OS strategy.'},
+  {id:68, name:'ERC-4337',        type:'Crypto', layer:5,  website:'https://ethereum.org',           logo:'ethereum.org',         detail:'Account Abstraction standard. Enables programmable wallets, session keys, sponsored gas for agents.'},
+  {id:69, name:'Biconomy',        type:'Crypto', layer:5,  website:'https://biconomy.io',            logo:'biconomy.io',          detail:'Account abstraction SDK. Gasless transactions and session keys for agent workflows.'},
+  {id:70, name:'ZeroDev',         type:'Crypto', layer:5,  website:'https://zerodev.app',            logo:'zerodev.app',          detail:'Smart account infrastructure. Kernel for modular smart accounts. Agent-compatible session keys.'},
+  {id:71, name:'BitGo',           type:'Crypto', layer:5,  website:'https://bitgo.com',              logo:'bitgo.com',            detail:'Institutional custody. Qualified custodian for agent treasury management with insurance.'},
+  {id:72, name:'Lithic',          type:'TradFi', layer:6,  website:'https://lithic.com',             logo:'lithic.com',           detail:'Programmable virtual cards. Agentic Commerce Consortium member. Agent-ready card issuance.'},
+  {id:73, name:'Stripe Issuing',  type:'TradFi', layer:6,  website:'https://stripe.com/issuing',     logo:'stripe.com',           detail:'Programmatic virtual/physical cards. Real-time auth controls. Extends into agent card issuance.'},
+  {id:74, name:'Marqeta',         type:'TradFi', layer:6,  website:'https://marqeta.com',            logo:'marqeta.com',          detail:'Card issuing platform. APIs for programmatic card creation and real-time authorization.'},
+  {id:75, name:'Highnote',        type:'TradFi', layer:6,  website:'https://highnote.com',           logo:'highnote.com',         detail:'Modern card issuing platform. APIs for agent payment instruments.'},
+  {id:76, name:'Ramp',            type:'TradFi', layer:6,  website:'https://ramp.com',               logo:'ramp.com',             detail:'Applied Visa Intelligent Commerce to automate B2B bill payments. Corporate cards with agent controls.'},
+  {id:77, name:'Brex',            type:'TradFi', layer:6,  website:'https://brex.com',               logo:'brex.com',             detail:'Corporate cards with programmatic controls for B2B agent workflows.'},
+  {id:78, name:'Rye',             type:'TradFi', layer:7,  website:'https://rye.com',                logo:'rye.com',              detail:'Universal Checkout API. Any merchant, any product URL, tokenized payment. No merchant integration required. Agentic Commerce Consortium member.'},
+  {id:79, name:'Henry Labs',      type:'TradFi', layer:7,  website:'https://henrylabs.com',          logo:'henrylabs.com',        detail:'Agentic one-click checkout for AI-native shopping. Nekuda wallet SDK. Agentic Commerce Consortium founding member.'},
+  {id:80, name:'CartAI',          type:'TradFi', layer:7,  website:'https://cartai.com',             logo:'cartai.com',           detail:'White-label embeddable cart. Publisher-first approach. Supports ACP, UCP, browser agents.'},
+  {id:81, name:'Zinc',            type:'TradFi', layer:7,  website:'https://zinc.io',                logo:'zinc.io',              detail:'Purchasing API for major retailers (Amazon, Walmart, Target, Best Buy). Repositioning for AI.'},
+  {id:82, name:'GXO.dev',         type:'TradFi', layer:7,  website:'https://gxo.dev',                logo:'gxo.dev',              detail:'Agentic commerce platform. Simple setup for smaller merchants to participate in agent economy.'},
+  {id:83, name:'Shopify',         type:'TradFi', layer:8,  website:'https://shopify.com',            logo:'shopify.com',          detail:'Co-developed UCP with Google. Agentic Storefronts. Catalog API + Universal Cart + Checkout Kit. 1M+ merchants onboarding ACP.'},
+  {id:84, name:'commercetools',   type:'TradFi', layer:8,  website:'https://commercetools.com',      logo:'commercetools.com',    detail:'Agent Gateway. API-first headless architecture. Catalog Optimization Agent for 10M+ items.'},
+  {id:85, name:'BigCommerce',     type:'TradFi', layer:8,  website:'https://bigcommerce.com',        logo:'bigcommerce.com',      detail:'Rebranding as "Commerce." Unifying with Feedonomics + Makeswift. Headless APIs for agent interaction.'},
+  {id:86, name:'Adobe Commerce',  type:'TradFi', layer:8,  website:'https://business.adobe.com',     logo:'adobe.com',            detail:'Supports UCP + ACP. AI referrals convert 31% higher, 254% more revenue/visit vs traditional traffic.'},
+  {id:87, name:'SAP Commerce',    type:'TradFi', layer:8,  website:'https://sap.com',                logo:'sap.com',              detail:'Catalog Optimization Agent at NRF 2026. 10M+ items. 70% faster content improvement claimed.'},
+  {id:88, name:'Salesforce Commerce',type:'TradFi',layer:8,website:'https://salesforce.com',         logo:'salesforce.com',       detail:'AI layers for personalization and analytics. Agent-compatible APIs.'},
+  {id:89, name:'WooCommerce',     type:'TradFi', layer:8,  website:'https://woocommerce.com',        logo:'woocommerce.com',      detail:'WordPress commerce. Stripe Agentic Commerce Suite integration.'},
+  {id:90, name:'Squarespace',     type:'TradFi', layer:8,  website:'https://squarespace.com',        logo:'squarespace.com',      detail:'Stripe Agentic Commerce Suite integration.'},
+  {id:91, name:'Firmly',          type:'TradFi', layer:8,  website:'https://firmly.ai',              logo:'firmly.ai',            detail:'$5.2M raised (FJ Labs, Ark Invest, Mastercard). Unified "Buy Now" across all AI platforms. Powers Perplexity checkout.', funding:'$5.2M'},
+  {id:92, name:'Salsify',         type:'TradFi', layer:8,  website:'https://salsify.com',            logo:'salsify.com',          detail:'OpenAI Connect integration. Shares brand-approved content directly with ChatGPT.'},
+  {id:93, name:'Syndigo',         type:'TradFi', layer:8,  website:'https://syndigo.com',            logo:'syndigo.com',          detail:'OpenAI Connect + GEO product. ACP-compliant product data. 3,500+ retailers.'},
+  {id:94, name:'Akeneo',          type:'TradFi', layer:8,  website:'https://akeneo.com',             logo:'akeneo.com',           detail:'PIM platform. Stripe Agentic Commerce Suite partner. MCP Server connecting AI models to product data.'},
+  {id:95, name:'Feedonomics',     type:'TradFi', layer:8,  website:'https://feedonomics.com',        logo:'feedonomics.com',      detail:'BigCommerce subsidiary. AI-enriched product feeds distributed to agentic platforms.'},
+  {id:96, name:'Productsup',      type:'TradFi', layer:8,  website:'https://productsup.com',         logo:'productsup.com',       detail:'Live ChatGPT shopping integration via ACP. Product data syndication.'},
+  {id:97, name:'Catalog',         type:'TradFi', layer:8,  website:'https://getcatalog.ai',          logo:'getcatalog.ai',        detail:'Structures product data for agent consumption. Agentic Commerce Consortium member.'},
+  {id:98, name:'Swap Commerce',   type:'TradFi', layer:8,  website:'https://swapcommerce.com',       logo:'swapcommerce.com',     detail:'Universal product catalog + memory and preference layer for agents.'},
+  {id:99, name:'Wildcard',        type:'TradFi', layer:8,  website:'https://wildcard.ai',            logo:'wildcard.ai',          detail:'YC-backed. SKU-level visibility into how products appear inside ChatGPT and AI assistants.'},
+  {id:100,name:'Sitefire',        type:'TradFi', layer:8,  website:'https://sitefire.io',            logo:'sitefire.io',          detail:'YC-backed. Generative Engine Optimization (GEO). Helps companies win customers on ChatGPT, Gemini, etc.'},
+  {id:101,name:'ReFiBuy',         type:'TradFi', layer:8,  website:'https://refibuy.com',            logo:'refibuy.com',          detail:'Agentic Commerce Optimization (ACO) platform. Commerce Intelligence Engine. Founded by ChannelAdvisor creator.'},
+  {id:102,name:'FERMAT',          type:'TradFi', layer:8,  website:'https://fermatcommerce.com',     logo:'fermatcommerce.com',   detail:'$45M Series B (VMG Partners). "Commerce Brain": real-time shopper behavior graph for human and agent shoppers.', funding:'$45M'},
+  {id:103,name:'Base',            type:'Crypto', layer:9,  website:'https://base.org',               logo:'base.org',             detail:'Coinbase L2. Primary chain for Agentic Wallets and x402. Growing agent developer ecosystem.'},
+  {id:104,name:'Ethereum',        type:'Crypto', layer:9,  website:'https://ethereum.org',           logo:'ethereum.org',         detail:'Settlement layer. ERC-4337 account abstraction. ERC-8004 agent identity standard proposed.'},
+  {id:105,name:'Solana',          type:'Crypto', layer:9,  website:'https://solana.com',             logo:'solana.com',           detail:'High-throughput chain. Agent-friendly latency and cost. OKX Agentic Wallet support.'},
+  {id:106,name:'Arbitrum',        type:'Crypto', layer:9,  website:'https://arbitrum.io',            logo:'arbitrum.io',          detail:'Ethereum L2. Low-cost execution for DeFi agent workflows.'},
+  {id:107,name:'Optimism',        type:'Crypto', layer:9,  website:'https://optimism.io',            logo:'optimism.io',          detail:'Ethereum L2. OP Stack ecosystem. Superchain for cross-L2 agent operations.'},
+  {id:108,name:'Polygon',         type:'Crypto', layer:9,  website:'https://polygon.technology',     logo:'polygon.technology',   detail:'Multi-chain scaling. Acquired Sequence (wallet). Agent-compatible infrastructure.'},
+  {id:109,name:'Avalanche',       type:'Crypto', layer:9,  website:'https://avax.network',           logo:'avalabs.org',          detail:'Subnets for customized agent execution environments. Low-latency finality.'},
+  {id:110,name:'BNB Chain',       type:'Crypto', layer:9,  website:'https://bnbchain.org',           logo:'bnbchain.org',         detail:'Binance ecosystem. High throughput for agent transactions.'},
+  {id:111,name:'Celo',            type:'Crypto', layer:9,  website:'https://celo.org',               logo:'celo.org',             detail:'Mobile-first blockchain. Stablecoin-focused. Low-cost agent transactions.'},
+  {id:112,name:'LI.FI',           type:'Crypto', layer:10, website:'https://li.fi',                  logo:'li.fi',                detail:'Single-integration cross-chain API. MCP server with 15+ tools. 1,000+ integrators incl. MetaMask, Phantom, Ledger. 28+ endpoints. Swaps, bridging, yield, perpetuals.'},
+  {id:113,name:'1inch',           type:'Crypto', layer:10, website:'https://1inch.io',               logo:'1inch.io',             detail:'DEX aggregator. Multi-chain swap routing. Agent-compatible API.'},
+  {id:114,name:'0x (Matcha)',     type:'Crypto', layer:10, website:'https://0x.org',                 logo:'0x.org',               detail:'DEX aggregation protocol. API for swap execution across DEXs.'},
+  {id:115,name:'Paraswap',        type:'Crypto', layer:10, website:'https://paraswap.io',            logo:'paraswap.io',          detail:'Multi-chain DEX aggregator. API-first approach for agent integration.'},
+  {id:116,name:'Socket',          type:'Crypto', layer:10, website:'https://socket.tech',            logo:'socket.tech',          detail:'Cross-chain interoperability. Bridge aggregation for multi-chain agent operations.'},
+  {id:117,name:'LayerZero',       type:'Crypto', layer:10, website:'https://layerzero.network',      logo:'layerzero.network',    detail:'Omnichain interoperability protocol. Cross-chain messaging for agent coordination.'},
+  {id:118,name:'Wormhole',        type:'Crypto', layer:10, website:'https://wormhole.com',           logo:'wormhole.com',         detail:'Cross-chain messaging and bridging. Agent-compatible APIs for multi-chain operations.'},
+  {id:119,name:'Axelar',          type:'Crypto', layer:10, website:'https://axelar.network',         logo:'axelar.network',       detail:'Cross-chain communication. General Message Passing for agent workflows across chains.'},
+  {id:120,name:'Chainlink CCIP',  type:'Crypto', layer:10, website:'https://chain.link',             logo:'chain.link',           detail:'Cross-Chain Interoperability Protocol. Secure cross-chain messaging and token transfers.'},
+  {id:121,name:'Uniswap',         type:'Crypto', layer:11, website:'https://uniswap.org',            logo:'uniswap.org',          detail:'Largest DEX. Multi-chain. Primary execution venue for agent swap strategies.'},
+  {id:122,name:'Aave',            type:'Crypto', layer:11, website:'https://aave.com',               logo:'aave.com',             detail:'Lending/borrowing protocol. Agent treasury management and yield strategies.'},
+  {id:123,name:'Compound',        type:'Crypto', layer:11, website:'https://compound.finance',       logo:'compound.finance',     detail:'Lending protocol. Autonomous agent lending/borrowing workflows.'},
+  {id:124,name:'Maker (Sky)',     type:'Crypto', layer:11, website:'https://sky.money',              logo:'sky.money',            detail:'DAI/USDS stablecoin issuer. Agent treasury diversification.'},
+  {id:125,name:'Curve',           type:'Crypto', layer:11, website:'https://curve.fi',               logo:'curve.fi',             detail:'Stablecoin DEX. Optimal routing for agent stablecoin operations.'},
+  {id:126,name:'GMX',             type:'Crypto', layer:11, website:'https://gmx.io',                 logo:'gmx.io',               detail:'Perpetuals DEX. Agent-managed leveraged positions.'},
+  {id:127,name:'dYdX',            type:'Crypto', layer:11, website:'https://dydx.exchange',          logo:'dydx.exchange',        detail:'Perpetuals DEX. API-first for algorithmic agent trading.'},
+  {id:128,name:'Pendle',          type:'Crypto', layer:11, website:'https://pendle.finance',         logo:'pendle.finance',       detail:'Yield tokenization. Agents can trade yield exposure across maturities.'},
+  {id:129,name:'Morpho',          type:'Crypto', layer:11, website:'https://morpho.org',             logo:'morpho.org',           detail:'Lending optimization. Agents can access optimized lending rates.'},
+  {id:130,name:'Virtuals Protocol',type:'Crypto',layer:11, website:'https://virtuals.io',            logo:'virtuals.io',          detail:'Agent tokenization. Allows creation and trading of AI agent tokens.'},
+  {id:131,name:'Byte AI',         type:'Crypto', layer:11, website:'https://byte.ai',                logo:'byte.ai',              detail:'Commerce-related AI agent. Negotiates deals and pays for items on behalf of users.'},
+  {id:132,name:'Artemis',         type:'Crypto', layer:12, website:'https://artemisanalytics.com',   logo:'artemis.xyz',          detail:'Agentic Commerce Landscape map (114+ companies). Fundamental metrics for crypto.'},
+  {id:133,name:'x402scan',        type:'Crypto', layer:12, website:'https://x402scan.com',           logo:'x402scan.com',         detail:'Analytics for x402 protocol transactions. Tracks agent payment volume and activity.'},
+  {id:134,name:'Dune Analytics',  type:'Crypto', layer:12, website:'https://dune.com',               logo:'dune.com',             detail:'Onchain analytics. Agent activity dashboards. Query-based blockchain data.'},
+  {id:135,name:'The Graph',       type:'Crypto', layer:12, website:'https://thegraph.com',           logo:'thegraph.com',         detail:'Indexing protocol. Subgraphs for agent-readable onchain data.'},
+  {id:136,name:'Nansen',          type:'Crypto', layer:12, website:'https://nansen.ai',              logo:'nansen.ai',            detail:'Onchain analytics. Smart money tracking. Agent portfolio intelligence.'},
+  {id:137,name:'DefiLlama',       type:'Crypto', layer:12, website:'https://defillama.com',          logo:'defillama.com',        detail:'DeFi TVL and yield aggregator. Data source for agent yield optimization strategies.'},
+  {id:138,name:'Tempo MPP',       type:'Crypto', layer:4,  website:'https://tempo.xyz',               logo:'tempo.xyz',            detail:'Multi-Party Protocol for programmable stablecoin payments. Mainnet live. Enables agent-to-agent and agent-to-merchant micropayment flows on decentralized rails.'},
+];
+
+// ══════════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════════
+let activeLayer = 0;
+let activeType = 'all';
+let activeSort = 'default';
+let searchQ = '';
+let currentView = 'grid'; // 'grid' | 'universe'
+
+// ══════════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════════
+function hexToRgb(hex) {
+  const m = hex.replace('#','');
+  const r = parseInt(m.slice(0,2),16), g = parseInt(m.slice(2,4),16), b = parseInt(m.slice(4,6),16);
+  return [r,g,b];
+}
+function initials(name) {
+  return name.split(/[\s\(\)\/\-]+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('');
+}
+function lerp(a,b,t) { return a + (b-a)*t; }
+
+// ══════════════════════════════════════════════════════════════
+// SOCIAL HANDLES (official X/Twitter)
+// ══════════════════════════════════════════════════════════════
+// Verified official X/Twitter handles (searched Mar 2026)
+const TWITTER_HANDLES = {
+  // Layer 1 — Foundation Models
+  1:'AnthropicAI',     2:'OpenAI',            3:'GoogleDeepMind',  4:'xai',
+  5:'Meta',            6:'awscloud',          7:'Cloudflare',      8:'Microsoft',
+  9:'perplexity_ai',   10:'amazon',
+  // Layer 2 — Frameworks
+  13:'LangChainAI',    14:'crewAIInc',        18:'blockrun_ai',    19:'vercel',
+  20:'ManusAI',        21:'InducedAI',
+  // Layer 3 — Identity
+  26:'worldcoin',      27:'ProveIdentity',    28:'trulioo',        29:'ForterFraud',
+  30:'signifyd',       31:'SecureWithHUMAN',  32:'Riskified',      33:'Proofivy',
+  35:'kasada_io',      36:'data_dome',        37:'Akamai',
+  // Layer 4 — Payments
+  40:'Visa',           41:'Mastercard',       42:'stripe',         43:'PayPal',
+  45:'coinbase',       46:'trySkyfire',       47:'catena_labs',    48:'crossmint',
+  49:'nekuda_ai',      50:'basistheory',      51:'circle',         52:'BVNKFinance',
+  53:'pravapayments',  54:'GlideAI',          55:'blindpay',       56:'PaymanAI',
+  57:'Adyen',          58:'americanexpress',  138:'tempo',
+  // Layer 5 — Wallets
+  60:'privy_io',       61:'turnkeyhq',        62:'Fireblocks',     63:'phantom',
+  64:'safe',           65:'LitProtocol',      66:'openfort_io',    67:'okx',
+  69:'biconomy',       70:'zerodev_app',      71:'BitGo',
+  // Layer 6 — Cards
+  72:'lithic_io',      73:'stripe',           74:'Marqeta',        76:'ramp',
+  77:'brex',
+  // Layer 7 — Checkout
+  78:'rye_ai',         79:'henrylabs',        81:'zinc_io',
+  // Layer 8 — Merchant
+  83:'Shopify',        84:'commercetools',    86:'AdobeCommerce',  87:'SAP',
+  88:'salesforce',     89:'WooCommerce',      90:'squarespace',    92:'salsify',
+  93:'syndigo',        94:'akeneo',           95:'feedonomics',    96:'productsup',
+  99:'wildcard_ai',    102:'fermatcommerce',
+  // Layer 9 — Chains
+  103:'base',          104:'ethereum',        105:'solana',        106:'arbitrum',
+  107:'Optimism',      108:'0xPolygon',       109:'avax',          110:'BNBCHAIN',
+  111:'CeloOrg',
+  // Layer 10 — Cross-Chain
+  112:'lifiprotocol',  113:'1inch',           114:'0xProject',     115:'VeloraDEX',
+  116:'SocketDotTech', 117:'LayerZero_Labs',  118:'wormhole',      119:'axelarcore',
+  120:'chainlink',
+  // Layer 11 — DeFi
+  121:'Uniswap',       122:'aave',            123:'compoundfinance',124:'SkyEcosystem',
+  125:'CurveFinance',  126:'GMX_IO',          127:'dYdX',          128:'pendle_fi',
+  129:'MorphoLabs',    130:'virtuals_io',
+  // Layer 12 — Analytics
+  132:'artemisxyz',    133:'x402scan',        134:'duneanalytics',  135:'graphprotocol',
+  136:'nansen_ai',     137:'DefiLlama',
+};
+
+function xUrl(co) {
+  const handle = TWITTER_HANDLES[co.id];
+  if (handle) return `https://x.com/${handle}`;
+  // Derive from domain prefix as fallback
+  if (co.logo && !co.logo.startsWith('github')) {
+    const prefix = co.logo.split('.')[0].replace(/^www/, '');
+    if (prefix && prefix.length > 1) return `https://x.com/${prefix}`;
+  }
+  return `https://x.com/search?q=${encodeURIComponent(co.name)}`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// VIEW LAYOUT (grid | list)
+// ══════════════════════════════════════════════════════════════
+let activeLayout = 'grid';
+
+function setLayout(layout) {
+  activeLayout = layout;
+  document.getElementById('btn-grid').classList.toggle('active', layout==='grid');
+  document.getElementById('btn-list').classList.toggle('active', layout==='list');
+  renderCompanies();
+}
+
+// Logo loader — primary: Google faviconV2 (reliable, no key needed)
+// Clearbit is deprecated/unreliable; it now returns 1×1 pixels instead of 404s
+function logoImg(domain, name, extraClass='', size='') {
+  const inits = initials(name);
+  const sizeAttr = size ? ` width="${size}" height="${size}"` : '';
+  if (!domain) return `<div class="logo-initials">${inits}</div>`;
+  // Google's faviconV2 returns actual brand icons for all major companies, free, no API key
+  const gUrl = `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${domain}&size=128`;
+  return `<img src="${gUrl}" alt="${name}"${sizeAttr}
+    onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+  ><div class="logo-initials" style="display:none">${inits}</div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// PARTICLE SYSTEM
+// ══════════════════════════════════════════════════════════════
+(function initParticles() {
+  const canvas = document.getElementById('particle-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H;
+  const pts = [];
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < 70; i++) {
+    pts.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random()-0.5)*0.28,
+      vy: (Math.random()-0.5)*0.28,
+      r: Math.random()*1.2+0.4,
+    });
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    for (let i = 0; i < pts.length; i++) {
+      for (let j = i+1; j < pts.length; j++) {
+        const dx = pts[i].x-pts[j].x, dy = pts[i].y-pts[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < 140) {
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x, pts[i].y);
+          ctx.lineTo(pts[j].x, pts[j].y);
+          ctx.strokeStyle = `rgba(129,140,248,${0.11*(1-d/140)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    pts.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(129,140,248,0.42)';
+      ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ══════════════════════════════════════════════════════════════
+// UNIVERSE VISUALIZATION
+// ══════════════════════════════════════════════════════════════
+const UV = {
+  canvas: null, ctx: null,
+  mode: 'home', // home | layers | layer-detail
+  selectedLayerId: null,
+  t: 0,
+  logos: new Map(),
+  logosLoaded: false,
+  mouse: {x:0, y:0},
+  hovered: null,
+  rafId: null,
+  panelOpen: false,
+  drawCx: 0, drawCxTarget: 0,
+  // Sphere current/target values
+  main: { cx:0, cy:0, cr:0, ca:0, tcx:0, tcy:0, tcr:100, tca:1 },
+  layerSpheres: [],
+  companySpheres: [],
+};
+
+function drawGlassSphere(ctx, x, y, r, hexColor, alpha, glowStr=0.5) {
+  if (r < 0.5 || alpha < 0.01) return;
+  const [ri,gi,bi] = hexToRgb(hexColor);
+  ctx.save();
+  ctx.globalAlpha = alpha;
+
+  // Glow halo
+  const g1 = ctx.createRadialGradient(x,y,0,x,y,r*2.2);
+  g1.addColorStop(0,`rgba(${ri},${gi},${bi},${glowStr*0.28})`);
+  g1.addColorStop(1,`rgba(${ri},${gi},${bi},0)`);
+  ctx.beginPath(); ctx.arc(x,y,r*2.2,0,Math.PI*2);
+  ctx.fillStyle=g1; ctx.fill();
+
+  // Body
+  const g2 = ctx.createRadialGradient(x-r*0.2,y-r*0.2,0,x,y,r);
+  g2.addColorStop(0,`rgba(${ri},${gi},${bi},0.22)`);
+  g2.addColorStop(0.5,`rgba(${ri},${gi},${bi},0.11)`);
+  g2.addColorStop(1,`rgba(${ri},${gi},${bi},0.03)`);
+  ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.fillStyle=g2; ctx.fill();
+
+  // Top-left specular
+  ctx.save();
+  ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.clip();
+  const g3 = ctx.createRadialGradient(x-r*0.36,y-r*0.40,0,x-r*0.36,y-r*0.40,r*0.62);
+  g3.addColorStop(0,'rgba(255,255,255,0.52)');
+  g3.addColorStop(0.45,'rgba(255,255,255,0.10)');
+  g3.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=g3;
+  ctx.beginPath(); ctx.arc(x-r*0.36,y-r*0.40,r*0.62,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // Bottom specular
+  ctx.save();
+  ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.clip();
+  const g4 = ctx.createRadialGradient(x+r*0.26,y+r*0.44,0,x+r*0.26,y+r*0.44,r*0.28);
+  g4.addColorStop(0,'rgba(255,255,255,0.16)'); g4.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=g4;
+  ctx.beginPath(); ctx.arc(x+r*0.26,y+r*0.44,r*0.28,0,Math.PI*2); ctx.fill();
+  ctx.restore();
+
+  // Border
+  ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.22)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.restore();
+}
+
+function drawSphereLabel(ctx, x, y, r, text, color, subtext) {
+  ctx.save();
+  ctx.textAlign='center';
+  ctx.font=`500 ${Math.max(10,r*0.25)}px 'Inter',sans-serif`;
+  ctx.fillStyle='rgba(255,255,255,0.88)';
+  ctx.fillText(text, x, y+r+16);
+  if (subtext) {
+    ctx.font=`400 ${Math.max(8,r*0.18)}px 'JetBrains Mono',monospace`;
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.fillText(subtext, x, y+r+30);
+  }
+  ctx.restore();
+}
+
+function drawConnection(ctx, x1,y1, x2,y2, c1,c2, t, alpha) {
+  const [r1,g1,b1]=hexToRgb(c1), [r2,g2,b2]=hexToRgb(c2);
+  const grd = ctx.createLinearGradient(x1,y1,x2,y2);
+  grd.addColorStop(0,`rgba(${r1},${g1},${b1},${alpha*0.2})`);
+  grd.addColorStop(0.5,`rgba(255,255,255,${alpha*0.06})`);
+  grd.addColorStop(1,`rgba(${r2},${g2},${b2},${alpha*0.2})`);
+  ctx.save();
+  ctx.setLineDash([5,9]);
+  ctx.lineDashOffset = -t*10;
+  ctx.strokeStyle=grd; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.restore();
+}
+
+function initUniverse() {
+  const uv = UV;
+  uv.canvas = document.getElementById('universe-canvas');
+  uv.ctx = uv.canvas.getContext('2d');
+
+  function resize() {
+    uv.canvas.width = uv.canvas.offsetWidth;
+    uv.canvas.height = uv.canvas.offsetHeight;
+    // Recalculate drawCx on resize
+    if (uv.panelOpen) {
+      uv.drawCx = uv.drawCxTarget = uv.canvas.width * 0.5 + 145;
+    } else {
+      uv.drawCx = uv.drawCxTarget = uv.canvas.width / 2;
+    }
+  }
+  resize();
+  new ResizeObserver(resize).observe(uv.canvas);
+
+  // Init main sphere
+  uv.main.cx = uv.main.tcx = uv.canvas.width/2;
+  uv.main.cy = uv.main.tcy = uv.canvas.height/2;
+  uv.main.cr = uv.main.tcr = Math.min(uv.canvas.width, uv.canvas.height)*0.13;
+  uv.main.ca = uv.main.tca = 1;
+  uv.drawCx = uv.drawCxTarget = uv.canvas.width/2;
+
+  // Init 12 layer spheres
+  for (let i=0; i<12; i++) {
+    uv.layerSpheres.push({
+      id: i+1, baseAngle: (i/12)*Math.PI*2 - Math.PI/2,
+      cx:uv.canvas.width/2, cy:uv.canvas.height/2,
+      tcx:uv.canvas.width/2, tcy:uv.canvas.height/2,
+      cr:0, tcr:0, ca:0, tca:0,
+      orbitSpeed: 0.00045,
+    });
+  }
+
+  uv.canvas.addEventListener('mousemove', onUniverseMouseMove);
+  uv.canvas.addEventListener('click', onUniverseClick);
+  uv.canvas.style.cursor='default';
+
+  universeAnimate();
+  preloadLogos();
+}
+
+function preloadLogos() {
+  const domains = [...new Set(COMPANIES.filter(c=>c.logo).map(c=>c.logo))];
+  let loaded = 0;
+  const total = domains.length;
+  function done() { loaded++; if(loaded>=total) UV.logosLoaded=true; }
+  domains.forEach(d => {
+    const img = new Image();
+    // Google faviconV2 — reliable, no API key, returns real brand icons
+    img.onload = () => { UV.logos.set(d, img); done(); };
+    img.onerror = done;
+    img.src = `https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${d}&size=128`;
+  });
+  if (!total) UV.logosLoaded = true;
+}
+
+function universeAnimate() {
+  const uv = UV;
+  if (!uv.canvas) return;
+  UV.rafId = requestAnimationFrame(universeAnimate);
+
+  const ctx = uv.ctx;
+  const W = uv.canvas.width, H = uv.canvas.height;
+  const cy = H/2;
+  uv.t += 0.014;
+
+  // Lerp drawCx (shifts right when panel is open)
+  uv.drawCx = lerp(uv.drawCx, uv.drawCxTarget, 0.07);
+  const cx = uv.drawCx;
+
+  ctx.clearRect(0,0,W,H);
+
+  const LR = Math.min(W,H)*0.33; // layer orbit radius
+  const sc = Math.min(W,H)/800;  // scale factor
+
+  // Lerp main sphere
+  const sp = 0.07;
+  uv.main.cx = lerp(uv.main.cx, uv.main.tcx, sp);
+  uv.main.cy = lerp(uv.main.cy, uv.main.tcy, sp);
+  uv.main.cr = lerp(uv.main.cr, uv.main.tcr, sp);
+  uv.main.ca = lerp(uv.main.ca, uv.main.tca, sp);
+
+  // Lerp + position layer spheres
+  uv.layerSpheres.forEach((s,i) => {
+    s.cr = lerp(s.cr, s.tcr, sp);
+    s.ca = lerp(s.ca, s.tca, sp);
+
+    if (uv.mode === 'layers') {
+      const angle = s.baseAngle + uv.t * s.orbitSpeed * 60;
+      s.tcx = cx + LR * Math.cos(angle);
+      s.tcy = cy + LR * Math.sin(angle) * 0.62;
+    } else if (uv.mode === 'layer-detail') {
+      if (s.id === uv.selectedLayerId) {
+        s.tcx = cx; s.tcy = cy;
+      } else {
+        const angle = s.baseAngle + uv.t * s.orbitSpeed * 60;
+        s.tcx = cx + LR*1.1 * Math.cos(angle);
+        s.tcy = cy + LR*1.1 * Math.sin(angle) * 0.62;
+      }
+    }
+    s.cx = lerp(s.cx, s.tcx, sp);
+    s.cy = lerp(s.cy, s.tcy, sp);
+  });
+
+  // Lerp company satellites
+  uv.companySpheres.forEach(s => {
+    s.ca = lerp(s.ca, s.tca, 0.05);
+    s.angle += s.speed;
+  });
+
+  // ── DRAW CONNECTIONS (layers state)
+  if (uv.mode === 'layers' || uv.mode === 'layer-detail') {
+    const connAlpha = uv.mode==='layers' ? Math.min(uv.layerSpheres[0].ca, 0.8) : 0.15;
+    LAYER_CONNECTIONS.forEach(([a,b]) => {
+      const sa = uv.layerSpheres[a-1], sb = uv.layerSpheres[b-1];
+      const c1 = LAYERS[a].color, c2 = LAYERS[b].color;
+      drawConnection(ctx, sa.cx,sa.cy, sb.cx,sb.cy, c1,c2, uv.t, connAlpha);
+    });
+  }
+
+  // Keep main sphere tracking the shifted center
+  uv.main.tcx = cx;
+  uv.main.tcy = cy;
+
+  // ── DRAW MAIN SPHERE
+  if (uv.mode === 'home') {
+    const pulse = 1 + Math.sin(uv.t*1.8)*0.025;
+    drawGlassSphere(ctx, uv.main.cx, uv.main.cy, uv.main.cr*pulse, '#818cf8', uv.main.ca, 0.7);
+    // Center text
+    ctx.save();
+    ctx.globalAlpha = uv.main.ca;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font=`italic ${Math.max(14,uv.main.cr*0.28)}px 'Instrument Serif',serif`;
+    ctx.fillStyle='rgba(255,255,255,0.9)';
+    ctx.fillText('Agentic Commerce', uv.main.cx, uv.main.cy - uv.main.cr*0.1);
+    ctx.font=`400 ${Math.max(9,uv.main.cr*0.14)}px 'JetBrains Mono',monospace`;
+    ctx.fillStyle='rgba(255,255,255,0.4)';
+    ctx.fillText('138 companies · 12 layers', uv.main.cx, uv.main.cy + uv.main.cr*0.18);
+    ctx.textBaseline='alphabetic';
+    ctx.restore();
+  } else {
+    drawGlassSphere(ctx, uv.main.cx, uv.main.cy, uv.main.cr, '#818cf8', uv.main.ca, 0.5);
+  }
+
+  // ── DRAW LAYER SPHERES
+  uv.layerSpheres.forEach((s,i) => {
+    if (s.cr < 0.5 || s.ca < 0.02) return;
+    const layer = LAYERS[s.id];
+    const isHovered = uv.hovered === `L${i}`;
+    const glowStr = isHovered ? 0.9 : 0.5;
+    drawGlassSphere(ctx, s.cx, s.cy, s.cr * (isHovered?1.08:1), layer.color, s.ca, glowStr);
+
+    if (uv.mode==='layer-detail' && s.id===uv.selectedLayerId) {
+      // label inside sphere
+      ctx.save();
+      ctx.globalAlpha=s.ca;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.font=`italic ${Math.max(12,s.cr*0.22)}px 'Instrument Serif',serif`;
+      ctx.fillStyle='rgba(255,255,255,0.85)';
+      ctx.fillText(layer.name, s.cx, s.cy - s.cr*0.08);
+      ctx.font=`500 ${Math.max(9,s.cr*0.13)}px 'JetBrains Mono',monospace`;
+      ctx.fillStyle='rgba(255,255,255,0.4)';
+      const cnt = COMPANIES.filter(c=>c.layer===s.id).length;
+      ctx.fillText(`${cnt} companies`, s.cx, s.cy + s.cr*0.18);
+      ctx.textBaseline='alphabetic';
+      ctx.restore();
+    } else {
+      drawSphereLabel(ctx, s.cx, s.cy, s.cr, layer.name, layer.color, null);
+    }
+  });
+
+  // ── DRAW COMPANY SATELLITES
+  if (uv.mode === 'layer-detail') {
+    const selSphere = uv.layerSpheres.find(s=>s.id===uv.selectedLayerId);
+    if (selSphere) {
+      uv.companySpheres.forEach((s,i) => {
+        if (s.ca < 0.02) return;
+        const ex = selSphere.cx + s.orbitR * Math.cos(s.angle);
+        const ey = selSphere.cy + s.orbitR * Math.sin(s.angle) * 0.55;
+        const isHov = uv.hovered === `C${i}`;
+        const layerColor = LAYERS[s.company.layer].color;
+        drawGlassSphere(ctx, ex, ey, s.r*(isHov?1.15:1), layerColor, s.ca, isHov?0.8:0.4);
+
+        // Logo or initials
+        ctx.save();
+        ctx.globalAlpha=s.ca*0.85;
+        ctx.beginPath(); ctx.arc(ex,ey,s.r-2,0,Math.PI*2); ctx.clip();
+        const logo = UV.logos.get(s.company.logo);
+        if (logo && logo.complete && logo.naturalWidth>0) {
+          ctx.drawImage(logo, ex-(s.r-2), ey-(s.r-2), (s.r-2)*2, (s.r-2)*2);
+        } else {
+          ctx.fillStyle=layerColor+'30';
+          ctx.fillRect(ex-(s.r-2),ey-(s.r-2),(s.r-2)*2,(s.r-2)*2);
+          ctx.fillStyle='rgba(255,255,255,0.7)';
+          ctx.textAlign='center'; ctx.textBaseline='middle';
+          ctx.font=`bold ${Math.max(7,s.r*0.5)}px 'Inter',sans-serif`;
+          ctx.fillText(initials(s.company.name), ex, ey);
+        }
+        ctx.restore();
+
+        // Name label below satellite
+        ctx.save();
+        ctx.globalAlpha = s.ca * 0.82;
+        ctx.textAlign='center';
+        const labelFontSize = Math.max(8, s.r * 0.44);
+        ctx.font=`500 ${labelFontSize}px 'Inter',sans-serif`;
+        ctx.fillStyle='rgba(255,255,255,0.85)';
+        // Truncate name to fit
+        const displayName = s.company.name.length > 16 ? s.company.name.slice(0,14)+'…' : s.company.name;
+        ctx.fillText(displayName, ex, ey + s.r + labelFontSize + 3);
+        ctx.restore();
+
+        s._ex = ex; s._ey = ey; // store for hit testing
+      });
+    }
+  }
+
+  // ── HOVER CURSOR
+  const didHit = uv.hovered !== null;
+  uv.canvas.style.cursor = didHit ? 'pointer' : 'default';
+}
+
+function getUniverseHit(mx, my) {
+  const uv = UV;
+  // Check company satellites
+  if (uv.mode === 'layer-detail') {
+    for (let i=0; i<uv.companySpheres.length; i++) {
+      const s = uv.companySpheres[i];
+      if (s._ex===undefined) continue;
+      if (Math.hypot(mx-s._ex, my-s._ey) < s.r+6) return `C${i}`;
+    }
+  }
+  // Check layer spheres
+  for (let i=0; i<uv.layerSpheres.length; i++) {
+    const s = uv.layerSpheres[i];
+    if (s.cr<2 || s.ca<0.1) continue;
+    if (Math.hypot(mx-s.cx, my-s.cy) < s.cr+8) return `L${i}`;
+  }
+  // Check main sphere
+  if (Math.hypot(mx-uv.main.cx, my-uv.main.cy) < uv.main.cr+8) return 'main';
+  return null;
+}
+
+function onUniverseMouseMove(e) {
+  const rect = UV.canvas.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  UV.mouse.x=mx; UV.mouse.y=my;
+  UV.hovered = getUniverseHit(mx,my);
+
+  const tt = document.getElementById('u-tooltip');
+  if (UV.hovered && UV.hovered.startsWith('L')) {
+    const idx = parseInt(UV.hovered.slice(1));
+    const layer = LAYERS[UV.layerSpheres[idx].id];
+    document.getElementById('u-tt-name').textContent = layer.long;
+    document.getElementById('u-tt-sub').textContent = `${COMPANIES.filter(c=>c.layer===layer.id).length} companies`;
+    tt.style.left = (mx+16)+'px'; tt.style.top = (my-10)+'px'; tt.style.opacity='1';
+  } else if (UV.hovered && UV.hovered.startsWith('C')) {
+    const idx = parseInt(UV.hovered.slice(1));
+    const co = UV.companySpheres[idx].company;
+    document.getElementById('u-tt-name').textContent = co.name;
+    document.getElementById('u-tt-sub').textContent = `${co.type} · Layer ${co.layer}`;
+    tt.style.left = (mx+16)+'px'; tt.style.top = (my-10)+'px'; tt.style.opacity='1';
+  } else {
+    tt.style.opacity='0';
+  }
+}
+
+function onUniverseClick(e) {
+  const rect = UV.canvas.getBoundingClientRect();
+  const mx = e.clientX-rect.left, my = e.clientY-rect.top;
+  const hit = getUniverseHit(mx,my);
+
+  if (!hit) return;
+
+  if (UV.mode==='home' && hit==='main') {
+    universeGoLayers();
+  } else if (UV.mode==='layers' && hit.startsWith('L')) {
+    universeGoDetail(UV.layerSpheres[parseInt(hit.slice(1))].id);
+  } else if (UV.mode==='layer-detail' && hit.startsWith('C')) {
+    const co = UV.companySpheres[parseInt(hit.slice(1))].company;
+    openModal(co);
+  }
+}
+
+function universeGoLayers() {
+  UV.mode='layers';
+  document.getElementById('u-instruction').textContent='Click a layer sphere to explore companies';
+  document.getElementById('u-back').style.display='block';
+  UV.drawCxTarget = UV.canvas.width / 2;
+
+  // Shrink main sphere
+  const sc = Math.min(UV.canvas.width, UV.canvas.height);
+  UV.main.tcr = sc*0.06;
+  UV.main.tca = 0.6;
+
+  // Expand layer spheres
+  const lr = sc*0.073;
+  UV.layerSpheres.forEach(s => { s.tcr=lr; s.tca=1; });
+}
+
+function universeGoDetail(layerId) {
+  UV.mode='layer-detail';
+  UV.selectedLayerId=layerId;
+  document.getElementById('u-instruction').textContent='Click a company to see details · Click ← to go back';
+
+  const layer = LAYERS[layerId];
+  const companies = COMPANIES.filter(c=>c.layer===layerId);
+
+  // Open side panel
+  const panel = document.getElementById('u-side-panel');
+  document.getElementById('usp-layer-badge').textContent='Layer ' + layerId;
+  document.getElementById('usp-layer-badge').style.color = layer.color;
+  document.getElementById('usp-layer-name').textContent = layer.long;
+  document.getElementById('usp-layer-name').style.color = layer.color;
+  document.getElementById('usp-layer-desc').textContent = layer.desc;
+  document.getElementById('usp-section-label').textContent = companies.length + ' Companies';
+  const list = document.getElementById('usp-company-list');
+  list.innerHTML = companies.map(co => {
+    const typeClass = co.type.toLowerCase().replace(' ','');
+    return `<div class="usp-company-item" onclick="openModal(COMPANIES[${co.id-1}])">
+      <div class="usp-co-logo">
+        ${logoImg(co.logo, co.name)}
+      </div>
+      <div class="usp-co-name">${co.name}</div>
+      <span class="usp-co-type ${typeClass}">${co.type}</span>
+    </div>`;
+  }).join('');
+  panel.classList.add('visible');
+  UV.panelOpen = true;
+
+  // Shift canvas center right to make room for panel (290px panel)
+  UV.drawCxTarget = UV.canvas.width * 0.5 + 145;
+
+  const sc = Math.min(UV.canvas.width, UV.canvas.height);
+  // Selected sphere grows to center
+  UV.layerSpheres.forEach(s => {
+    if (s.id===layerId) { s.tcr=sc*0.11; s.tca=1; }
+    else { s.tcr=sc*0.038; s.tca=0.25; }
+  });
+  UV.main.tcr=sc*0.04; UV.main.tca=0.3;
+
+  // Build company satellites
+  UV.companySpheres=[];
+  const rings=[{r:sc*0.17,sp:0.012},{r:sc*0.24,sp:0.008},{r:sc*0.31,sp:0.006}];
+  companies.forEach((co,i) => {
+    const ringIdx=Math.min(Math.floor(i/7),2);
+    const rng=rings[ringIdx];
+    UV.companySpheres.push({
+      company:co, orbitR:rng.r,
+      angle:(i/companies.length)*Math.PI*2,
+      speed:rng.sp*(0.7+Math.random()*0.6)*(Math.random()<0.5?1:-1),
+      r:Math.max(18,sc*0.028-ringIdx*2),
+      ca:0, tca:1, _ex:undefined, _ey:undefined,
+    });
+  });
+}
+
+function universeBack() {
+  if (UV.mode==='layer-detail') {
+    UV.mode='layers';
+    UV.selectedLayerId=null;
+    UV.companySpheres=[];
+
+    // Close side panel
+    document.getElementById('u-side-panel').classList.remove('visible');
+    UV.panelOpen = false;
+    UV.drawCxTarget = UV.canvas.width / 2;
+
+    document.getElementById('u-instruction').textContent='Click a layer sphere to explore companies';
+
+    const sc=Math.min(UV.canvas.width,UV.canvas.height);
+    UV.main.tcr=sc*0.06; UV.main.tca=0.6;
+    UV.layerSpheres.forEach(s=>{ s.tcr=sc*0.073; s.tca=1; });
+  } else if (UV.mode==='layers') {
+    UV.mode='home';
+    document.getElementById('u-back').style.display='none';
+    document.getElementById('u-instruction').textContent='Click the sphere to explore the ecosystem';
+    UV.drawCxTarget = UV.canvas.width / 2;
+
+    const sc=Math.min(UV.canvas.width,UV.canvas.height);
+    UV.main.tcr=sc*0.13; UV.main.tca=1;
+    UV.layerSpheres.forEach(s=>{ s.tcr=0; s.tca=0; });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════════════════════════
+function buildTabs() {
+  const nav = document.getElementById('tabs-nav');
+  const counts = {};
+  COMPANIES.forEach(c => { counts[c.layer] = (counts[c.layer]||0)+1; });
+
+  // All Layers
+  const allBtn = document.createElement('button');
+  allBtn.className='tab-btn active';
+  allBtn.innerHTML=`<span class="tab-dot" style="background:#818cf8"></span>All Layers <span class="tab-count">${COMPANIES.length}</span>`;
+  allBtn.onclick=()=>setLayer(0);
+  allBtn.dataset.layer='0';
+  nav.appendChild(allBtn);
+
+  // Per layer
+  for (let i=1; i<=12; i++) {
+    const layer=LAYERS[i];
+    const btn=document.createElement('button');
+    btn.className='tab-btn';
+    btn.dataset.layer=i;
+    btn.innerHTML=`<span class="tab-dot" style="background:${layer.color}"></span>${layer.name} <span class="tab-count">${counts[i]||0}</span>`;
+    btn.style.setProperty('--layer-color',layer.color);
+    btn.onclick=()=>setLayer(i);
+    nav.appendChild(btn);
+  }
+
+}
+
+function setLayer(id) {
+  activeLayer=id;
+  setView('grid');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.layer==id && b.dataset.layer!=='universe');
+  });
+  const layer=id>0?LAYERS[id]:null;
+  const desc=document.getElementById('layer-desc');
+  desc.textContent=layer?layer.desc:'138 companies mapped across 12 infrastructure layers — from foundation AI to DeFi execution venues.';
+  desc.style.borderLeftColor=layer?layer.color:'rgba(255,255,255,0.1)';
+  renderGrid();
+}
+
+function setView(view) {
+  currentView=view;
+  const grid=document.getElementById('company-grid');
+  const uview=document.getElementById('universe-view');
+  const ldesc=document.getElementById('layer-desc');
+
+  if (view==='universe') {
+    grid.style.display='none';
+    ldesc.style.display='none';
+    uview.style.display='block';
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    // Init canvas if first time
+    if (!UV.canvas) {
+      setTimeout(initUniverse,50);
+    } else {
+      if (!UV.rafId) universeAnimate();
+    }
+  } else {
+    grid.style.display='';
+    ldesc.style.display='';
+    uview.style.display='none';
+    if (UV.rafId) { cancelAnimationFrame(UV.rafId); UV.rafId=null; }
+    renderGrid();
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// FILTER / SORT / SEARCH
+// ══════════════════════════════════════════════════════════════
+function onSearch() { searchQ=document.getElementById('search').value.toLowerCase(); renderGrid(); }
+
+function setType(el) {
+  activeType=el.dataset.type;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('active',p.dataset.type===activeType));
+  renderGrid();
+}
+
+function setSort(v) { activeSort=v; renderGrid(); }
+
+function getFiltered() {
+  let list=COMPANIES;
+  if (activeLayer>0) list=list.filter(c=>c.layer===activeLayer);
+  if (activeType!=='all') list=list.filter(c=>c.type===activeType);
+  if (searchQ) list=list.filter(c=>(c.name+c.detail+LAYERS[c.layer].name).toLowerCase().includes(searchQ));
+  if (activeSort==='name') list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
+  else if (activeSort==='layer') list=[...list].sort((a,b)=>a.layer-b.layer||a.id-b.id);
+  else if (activeSort==='funding') list=[...list].sort((a,b)=>(b.funding?1:0)-(a.funding?1:0));
+  return list;
+}
+
+function renderCompanies() {
+  if (currentView==='universe') return;
+  const grid=document.getElementById('company-grid');
+  const list=getFiltered();
+  document.getElementById('results-count').innerHTML=`<strong>${list.length}</strong> compan${list.length===1?'y':'ies'}`;
+  if (!list.length) {
+    grid.className='company-grid';
+    grid.innerHTML=`<div class="empty-state"><h3>No results</h3><p>Try adjusting your search or filters.</p></div>`;
+    return;
+  }
+  if (activeLayout==='list') {
+    grid.className='company-list';
+    grid.innerHTML=list.map(renderRow).join('');
+  } else {
+    grid.className='company-grid';
+    grid.innerHTML=list.map((c,i)=>renderCard(c,i)).join('');
+    grid.querySelectorAll('.company-card').forEach((el,i) => {
+      el.style.animationDelay=`${Math.min(i,20)*0.03}s`;
+      addParallax(el);
+    });
+  }
+}
+
+// Legacy alias (called from setLayer, setType, etc.)
+function renderGrid() { renderCompanies(); }
+
+function renderCard(c, i) {
+  const layer=LAYERS[c.layer];
+  const typeClass=c.type.toLowerCase().replace(' ','');
+  return `
+<div class="company-card" style="--layer-color:${layer.color}" onclick="openModal(COMPANIES[${c.id-1}])">
+  <div class="card-glare"></div>
+  <div class="card-header">
+    <div class="company-logo-wrap">
+      ${logoImg(c.logo, c.name)}
+    </div>
+    <div class="card-badges">
+      <span class="badge badge-${typeClass}">${c.type}</span>
+      <span class="badge badge-layer">L${c.layer}</span>
+    </div>
+  </div>
+  <div>
+    <div class="company-name">${c.name}</div>
+    <div class="company-detail">${c.detail}</div>
+  </div>
+  ${c.funding ? `<div class="card-funding">💰 ${c.funding}</div>` : ''}
+  <div class="card-footer">
+    <a class="card-link" href="${c.website}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Website
+    </a>
+    <span class="card-layer-tag">${layer.name}</span>
+  </div>
+</div>`;
+}
+
+function renderRow(c) {
+  const layer=LAYERS[c.layer];
+  const typeClass=c.type.toLowerCase().replace(' ','');
+  const xLink=xUrl(c);
+  return `<div class="company-row" style="--layer-color:${layer.color}" onclick="openModal(COMPANIES[${c.id-1}])">
+  <div class="row-logo">${logoImg(c.logo, c.name)}</div>
+  <span class="row-name">${c.name}</span>
+  <div class="row-badges">
+    <span class="badge badge-${typeClass}">${c.type}</span>
+    <span class="badge badge-layer">${layer.name}</span>
+  </div>
+  <span class="row-detail">${c.detail}</span>
+  ${c.funding?`<span class="row-funding">${c.funding}</span>`:''}
+  <div class="row-links">
+    <a class="row-link" href="${c.website}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Website">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+    </a>
+    <a class="row-link" href="${xLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="X / Twitter">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    </a>
+  </div>
+</div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// CARD PARALLAX
+// ══════════════════════════════════════════════════════════════
+function addParallax(card) {
+  card.addEventListener('mousemove', e => {
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-0.5;
+    const y=(e.clientY-r.top)/r.height-0.5;
+    card.style.transform=`perspective(900px) rotateX(${-y*9}deg) rotateY(${x*9}deg) translateZ(4px)`;
+    card.style.setProperty('--gx',`${(x+0.5)*100}%`);
+    card.style.setProperty('--gy',`${(y+0.5)*100}%`);
+    card.style.setProperty('--lx',`${x*7}px`);
+    card.style.setProperty('--ly',`${y*7}px`);
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform='';
+    card.style.setProperty('--gx','50%');
+    card.style.setProperty('--gy','50%');
+    card.style.setProperty('--lx','0px');
+    card.style.setProperty('--ly','0px');
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════════════════════════
+function openModal(co) {
+  const layer=LAYERS[co.layer];
+  const typeClass=co.type.toLowerCase().replace(' ','');
+  const modalTopBar=document.getElementById('modal-top-bar');
+  const modalBody=document.getElementById('modal-body');
+  const modal=document.getElementById('modal');
+
+  modalTopBar.style.background=layer.color;
+  modal.style.setProperty('--modal-layer-color',layer.color);
+
+  modalBody.innerHTML=`
+<button class="modal-close" onclick="closeModal()">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</button>
+<div class="modal-header">
+  <div class="modal-logo">
+    ${logoImg(co.logo, co.name)}
+  </div>
+  <div class="modal-title-area">
+    <div class="modal-company-name">${co.name}</div>
+    <div class="modal-badges">
+      <span class="badge badge-${typeClass}">${co.type}</span>
+      <span class="badge badge-layer">Layer ${co.layer}</span>
+    </div>
+  </div>
+</div>
+<div class="modal-divider"></div>
+<div class="modal-label">Infrastructure Layer</div>
+<div class="modal-layer-name"><span class="modal-layer-dot"></span>${layer.long}</div>
+<div class="modal-label">About</div>
+<div class="modal-description">${co.detail}</div>
+${co.funding ? `<div class="modal-funding">💰 Funding: ${co.funding}</div>` : ''}
+<div class="modal-links">
+  <a class="modal-link-btn website" href="${co.website}" target="_blank" rel="noopener">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+    Visit Website
+  </a>
+  <a class="modal-link-btn x-link" href="${xUrl(co)}" target="_blank" rel="noopener">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    ${TWITTER_HANDLES[co.id] ? `@${TWITTER_HANDLES[co.id]}` : 'X / Twitter'}
+  </a>
+</div>`;
+
+  modal.classList.add('open');
+}
+
+function closeModal(e) {
+  if (e && e.target!==document.getElementById('modal')) return;
+  document.getElementById('modal').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') {
+    document.getElementById('modal').classList.remove('open');
+    document.getElementById('submit-modal').classList.remove('open');
+  }
+});
+
+// ══════════════════════════════════════════════════════════════
+// SUBMIT FORM
+// ══════════════════════════════════════════════════════════════
+function openSubmitModal() {
+  document.getElementById('submit-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSubmitModal() {
+  document.getElementById('submit-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeSubmitModalOverlay(e) {
+  if (e.target === document.getElementById('submit-modal')) closeSubmitModal();
+}
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  const status = document.getElementById('submit-status');
+
+  // Field refs
+  const fields = {
+    name:      document.getElementById('f-name'),
+    website:   document.getElementById('f-website'),
+    type:      document.getElementById('f-type'),
+    layer:     document.getElementById('f-layer'),
+    description: document.getElementById('f-description'),
+    email:     document.getElementById('f-email'),
+  };
+
+  // Clear errors
+  Object.values(fields).forEach(el => el.classList.remove('error'));
+  status.className = 'submit-status';
+  status.textContent = '';
+
+  // Validate
+  let valid = true;
+  Object.entries(fields).forEach(([, el]) => {
+    if (!el.value.trim()) { el.classList.add('error'); valid = false; }
+  });
+  if (!valid) {
+    status.className = 'submit-status error';
+    status.textContent = 'Please fill in all required fields.';
+    return;
+  }
+  // Basic URL check
+  try { new URL(fields.website.value.trim()); } catch {
+    fields.website.classList.add('error');
+    status.className = 'submit-status error';
+    status.textContent = 'Please enter a valid website URL (including https://).';
+    return;
+  }
+
+  // Submit
+  btn.disabled = true;
+  btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 0.8s linear infinite"><polyline points="23 4 23 11 16 11"/><path d="M20.5 15a9 9 0 1 1-2.2-8.5L23 11"/></svg> Submitting…`;
+
+  const payload = {
+    name:          document.getElementById('f-name').value.trim(),
+    website:       document.getElementById('f-website').value.trim(),
+    type:          document.getElementById('f-type').value,
+    layer:         document.getElementById('f-layer').value,
+    description:   document.getElementById('f-description').value.trim(),
+    contactEmail:  document.getElementById('f-email').value.trim(),
+    logoDomain:    document.getElementById('f-logo').value.trim(),
+    twitterHandle: document.getElementById('f-twitter').value.trim().replace(/^@/, ''),
+    funding:       document.getElementById('f-funding').value.trim(),
+    submitterName: document.getElementById('f-submitter').value.trim(),
+  };
+
+  try {
+    const res = await fetch('/api/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Submission failed');
+    status.className = 'submit-status success';
+    status.textContent = '✓ Submitted successfully! We review submissions monthly and will be in touch.';
+    document.getElementById('submit-form').reset();
+  } catch (err) {
+    status.className = 'submit-status error';
+    status.textContent = `Submission failed: ${err.message}`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Submit for Review`;
+  }
+}
+
+// Spin keyframe for loading icon
+const spinStyle = document.createElement('style');
+spinStyle.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(spinStyle);
+
+// ══════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════
+buildTabs();
+setLayer(0);
+</script>
+</body>
+</html>
